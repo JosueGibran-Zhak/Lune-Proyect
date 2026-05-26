@@ -1,0 +1,2342 @@
+GUÍA TXT PARA ESTRUCTURAR CARPETAS Y ARCHIVOS EN ANGULAR
+===========================================================
+
+Objetivo de la guía
+-------------------
+Esta guía define una forma ordenada de estructurar un proyecto Angular moderno usando componentes standalone,
+archivos separados de TypeScript, HTML y SCSS, y responsabilidades claras por carpeta y archivo.
+
+La idea principal es simple:
+
+Cada archivo debe tener una sola responsabilidad.
+Cada componente debe resolver una sola parte visual.
+Cada servicio debe concentrar una sola lógica principal.
+Cada modelo debe describir una sola estructura de datos.
+Cada página debe organizar una vista completa, pero no debe contener toda la lógica interna.
+
+
+1. PRINCIPIO GENERAL DE ORGANIZACIÓN
+------------------------------------
+
+Un proyecto Angular debe dividirse por responsabilidades.
+
+No conviene tener todos los archivos mezclados dentro de app.
+Tampoco conviene que un componente haga demasiadas cosas.
+
+Ejemplo incorrecto:
+
+src/app/
+  usuarios.component.ts
+  productos.component.ts
+  tabla.component.ts
+  ventas.service.ts
+  app.component.ts
+  cliente.model.ts
+  login.component.ts
+
+Aunque funciona, con el tiempo se vuelve difícil de mantener.
+
+Ejemplo recomendado:
+
+src/app/
+  core/
+  shared/
+  features/
+  layout/
+  models/
+  app.config.ts
+  app.routes.ts
+  app.ts
+  app.html
+  app.scss
+
+
+2. ESTRUCTURA GENERAL RECOMENDADA
+---------------------------------
+
+src/
+  app/
+    core/
+      services/
+      guards/
+      interceptors/
+
+    shared/
+      components/
+      directives/
+      pipes/
+
+    features/
+      usuarios/
+      productos/
+      ventas/
+      auth/
+
+    layout/
+      header/
+      sidebar/
+      footer/
+
+    models/
+
+    app.config.ts
+    app.routes.ts
+    app.ts
+    app.html
+    app.scss
+
+  environments/
+    environment.ts
+    environment.development.ts
+
+  styles.scss
+  main.ts
+
+
+3. EXPLICACIÓN DE CADA CARPETA
+------------------------------
+
+3.1. core/
+----------
+
+La carpeta core contiene lógica central de la aplicación.
+
+Aquí van servicios o archivos que normalmente se usan en toda la aplicación.
+
+Ejemplos:
+
+core/
+  services/
+    auth.service.ts
+    api.service.ts
+    storage.service.ts
+
+  guards/
+    auth.guard.ts
+
+  interceptors/
+    auth.interceptor.ts
+
+Regla:
+core no debe contener componentes visuales comunes como tablas, botones o formularios.
+core es para lógica global.
+
+
+3.2. shared/
+------------
+
+La carpeta shared contiene elementos reutilizables.
+
+Aquí van componentes, directivas y pipes que pueden usarse en varias partes del sistema.
+
+Ejemplos:
+
+shared/
+  components/
+    dynamic-table/
+      dynamic-table.ts
+      dynamic-table.html
+      dynamic-table.scss
+
+    confirm-dialog/
+      confirm-dialog.ts
+      confirm-dialog.html
+      confirm-dialog.scss
+
+    search-box/
+      search-box.ts
+      search-box.html
+      search-box.scss
+
+  pipes/
+    format-date.pipe.ts
+
+  directives/
+    only-numbers.directive.ts
+
+Regla:
+shared debe contener elementos genéricos.
+No debe tener lógica específica de usuarios, ventas, productos o un módulo concreto.
+
+
+4. COMPONENTES ESPECIALIZADOS
+-----------------------------
+
+Un componente debe existir para una responsabilidad visual concreta.
+
+Ejemplo:
+
+Si se crea una tabla dinámica, esa tabla debe encargarse solo de mostrar datos tabulares, ordenar, filtrar, paginar o emitir eventos relacionados con filas.
+
+No debe encargarse de:
+- consultar usuarios al backend;
+- guardar productos;
+- autenticar usuarios;
+- calcular ventas;
+- decidir reglas de negocio del módulo.
+
+Ejemplo correcto:
+
+shared/components/dynamic-table/
+  dynamic-table.ts
+  dynamic-table.html
+  dynamic-table.scss
+
+Responsabilidad:
+Mostrar datos en forma de tabla y emitir acciones como editar, eliminar o seleccionar.
+
+Ejemplo incorrecto:
+Una tabla dinámica que también consulta Firebase, guarda usuarios, valida ventas y abre diálogos específicos.
+
+Eso rompe la separación de responsabilidades.
+
+
+5. COMPONENTES DE FEATURE
+-------------------------
+
+La carpeta features contiene módulos funcionales o secciones completas del sistema.
+
+Ejemplo:
+
+features/
+  usuarios/
+    pages/
+      usuarios-page/
+        usuarios-page.ts
+        usuarios-page.html
+        usuarios-page.scss
+
+    components/
+      usuario-form/
+        usuario-form.ts
+        usuario-form.html
+        usuario-form.scss
+
+    services/
+      usuarios.service.ts
+
+    models/
+      usuario.model.ts
+
+Cada feature puede tener sus propios:
+- pages;
+- components;
+- services;
+- models.
+
+Esto permite que cada módulo del sistema esté aislado y sea más fácil de mantener.
+
+
+6. DIFERENCIA ENTRE PAGE Y COMPONENT
+------------------------------------
+
+6.1. Page
+---------
+
+Una page representa una vista completa de la aplicación.
+
+Ejemplos:
+- usuarios-page
+- productos-page
+- ventas-page
+- login-page
+- dashboard-page
+
+Una page puede:
+- consumir servicios;
+- preparar datos;
+- conectar componentes;
+- manejar estados generales de pantalla;
+- recibir parámetros de rutas.
+
+Ejemplo:
+
+features/usuarios/pages/usuarios-page/
+  usuarios-page.ts
+  usuarios-page.html
+  usuarios-page.scss
+
+6.2. Component
+--------------
+
+Un component representa una pieza visual más pequeña.
+
+Ejemplos:
+- usuario-form
+- dynamic-table
+- search-box
+- product-card
+- confirm-dialog
+
+Un componente debe ser reutilizable o cumplir una función visual clara.
+
+Regla:
+Una page organiza.
+Un component representa una parte de la interfaz.
+
+
+7. MODELOS
+----------
+
+Los modelos definen la estructura de los datos.
+
+Ejemplo:
+
+models/
+  usuario.model.ts
+  producto.model.ts
+  venta.model.ts
+
+O dentro de una feature:
+
+features/usuarios/models/
+  usuario.model.ts
+
+Ejemplo de modelo:
+
+export interface Usuario {
+  id: number;
+  nombre: string;
+  correo: string;
+  activo: boolean;
+}
+
+Regla:
+Un modelo no debe consultar datos.
+Un modelo no debe guardar datos.
+Un modelo solo describe cómo luce un dato.
+
+
+8. SERVICIOS
+------------
+
+Los servicios concentran lógica de datos, comunicación con APIs, manejo de estado o reglas reutilizables.
+
+Ejemplo:
+
+features/usuarios/services/
+  usuarios.service.ts
+
+Responsabilidades correctas:
+- consultar usuarios;
+- agregar usuarios;
+- editar usuarios;
+- eliminar usuarios;
+- manejar signals relacionados con usuarios;
+- consumir endpoints del backend.
+
+Responsabilidades incorrectas:
+- contener HTML;
+- manipular directamente la vista;
+- tener estilos;
+- abrir demasiadas ventanas sin control;
+- mezclar lógica de usuarios, productos y ventas en el mismo servicio.
+
+Regla:
+Un servicio debe tener una responsabilidad principal.
+
+
+9. RUTAS
+--------
+
+El archivo app.routes.ts debe definir las rutas principales de la aplicación.
+
+Ejemplo:
+
+src/app/app.routes.ts
+
+Rutas recomendadas:
+
+/login
+/dashboard
+/usuarios
+/productos
+/ventas
+
+Cada ruta debe cargar una page, no un componente pequeño.
+
+Ejemplo conceptual:
+
+{
+  path: 'usuarios',
+  loadComponent: () =>
+    import('./features/usuarios/pages/usuarios-page/usuarios-page')
+      .then(m => m.UsuariosPage)
+}
+
+
+10. ARCHIVOS PRINCIPALES DE ANGULAR
+-----------------------------------
+
+10.1. main.ts
+-------------
+
+Arranca la aplicación.
+
+No debe llenarse de lógica de negocio.
+
+10.2. app.config.ts
+-------------------
+
+Contiene la configuración principal de Angular:
+- rutas;
+- HttpClient;
+- hidratación si aplica;
+- animaciones;
+- proveedores globales.
+
+10.3. app.routes.ts
+-------------------
+
+Define las rutas principales.
+
+10.4. app.ts
+------------
+
+Componente raíz.
+Debe mantenerse limpio.
+
+10.5. app.html
+--------------
+
+Plantilla raíz.
+Normalmente contiene router-outlet y estructura base.
+
+10.6. app.scss
+--------------
+
+Estilos específicos del componente raíz.
+No debe reemplazar a styles.scss.
+
+10.7. styles.scss
+-----------------
+
+Estilos globales de toda la aplicación:
+- variables;
+- reset;
+- tipografías;
+- clases utilitarias;
+- estilos generales.
+
+
+11. COMANDOS PARA CREAR PROYECTO ANGULAR
+----------------------------------------
+
+Crear proyecto Angular con SCSS:
+
+ng new nombre-proyecto --style=scss --routing
+
+Entrar al proyecto:
+
+cd nombre-proyecto
+
+Ejecutar el proyecto:
+
+ng serve
+
+Ejecutar en otro puerto:
+
+ng serve --port 4300
+
+Ejecutar visible en la red local:
+
+ng serve --host 0.0.0.0 --port 4200
+
+
+12. COMANDOS PARA CREAR COMPONENTES STANDALONE
+----------------------------------------------
+
+En Angular moderno, los componentes standalone son el enfoque recomendado para no depender de NgModules en la mayoría de los casos.
+
+12.1. Crear componente con archivos separados
+--------------------------------------------
+
+Comando recomendado:
+
+ng generate component ruta/nombre-componente --standalone --style=scss --skip-tests
+
+Ejemplo:
+
+ng generate component shared/components/dynamic-table --standalone --style=scss --skip-tests
+
+Esto crea:
+
+src/app/shared/components/dynamic-table/
+  dynamic-table.ts
+  dynamic-table.html
+  dynamic-table.scss
+
+12.2. Forma corta
+-----------------
+
+ng g c shared/components/dynamic-table --standalone --style=scss --skip-tests
+
+12.3. Crear componente sin archivo HTML separado
+------------------------------------------------
+
+Usar inline template:
+
+ng g c shared/components/boton-simple --standalone --inline-template --style=scss --skip-tests
+
+Esto evita crear archivo HTML separado.
+
+Se recomienda solo para componentes muy pequeños.
+
+12.4. Crear componente sin archivo SCSS separado
+------------------------------------------------
+
+Usar inline style:
+
+ng g c shared/components/badge-status --standalone --inline-style --skip-tests
+
+Se recomienda solo para componentes muy pequeños.
+
+12.5. Crear componente totalmente inline
+----------------------------------------
+
+ng g c shared/components/icon-label --standalone --inline-template --inline-style --skip-tests
+
+Se recomienda solo cuando el componente es mínimo.
+
+
+13. REGLA SOBRE HTML Y SCSS SEPARADOS
+-------------------------------------
+
+Para clases, prácticas y proyectos medianos, se recomienda usar archivos separados:
+
+componente.ts
+componente.html
+componente.scss
+
+Ejemplo:
+
+dynamic-table.ts
+dynamic-table.html
+dynamic-table.scss
+
+Ventajas:
+- el TypeScript no se llena de HTML;
+- los estilos no se mezclan con la lógica;
+- el código se explica mejor;
+- el mantenimiento es más sencillo;
+- el alumno entiende la separación entre lógica, estructura y presentación.
+
+
+14. CUÁNDO USAR INLINE TEMPLATE
+-------------------------------
+
+Usar --inline-template cuando:
+
+- el HTML tiene una o dos líneas;
+- el componente es demasiado pequeño;
+- se trata de un ejemplo rápido;
+- no habrá mucho diseño visual.
+
+Ejemplo adecuado:
+- icon-label
+- loading-text
+- empty-state muy pequeño
+
+No usar inline-template para:
+- formularios;
+- tablas;
+- dashboards;
+- páginas completas;
+- componentes con muchas condiciones;
+- componentes con listas.
+
+
+15. CUÁNDO USAR INLINE STYLE
+----------------------------
+
+Usar --inline-style cuando:
+
+- el componente casi no tiene estilos;
+- el estilo es mínimo;
+- se trata de un ejemplo muy pequeño.
+
+No usar inline-style para:
+- tablas;
+- formularios;
+- cards complejas;
+- dashboards;
+- layouts;
+- páginas completas.
+
+
+16. COMANDOS PARA CREAR SERVICIOS
+---------------------------------
+
+Crear servicio:
+
+ng generate service ruta/nombre-servicio --skip-tests
+
+Ejemplo:
+
+ng g s features/usuarios/services/usuarios --skip-tests
+
+Esto crea:
+
+src/app/features/usuarios/services/usuarios.service.ts
+
+Crear servicio global:
+
+ng g s core/services/api --skip-tests
+
+Crear servicio para almacenamiento local:
+
+ng g s core/services/local-storage --skip-tests
+
+
+17. COMANDOS PARA CREAR MODELOS
+-------------------------------
+
+Angular CLI no tiene un comando especial exclusivo para interfaces de modelo, pero puede usarse:
+
+ng generate interface ruta/nombre
+
+Ejemplo:
+
+ng g interface features/usuarios/models/usuario
+
+Esto crea:
+
+src/app/features/usuarios/models/usuario.ts
+
+Recomendación:
+Renombrar o crear manualmente como:
+
+usuario.model.ts
+
+Estructura recomendada:
+
+features/usuarios/models/
+  usuario.model.ts
+
+
+18. COMANDOS PARA CREAR GUARDS
+------------------------------
+
+Crear guard:
+
+ng generate guard core/guards/auth --skip-tests
+
+Forma corta:
+
+ng g guard core/guards/auth --skip-tests
+
+Uso:
+Un guard sirve para controlar si una ruta puede abrirse o no.
+
+Ejemplo:
+- proteger /dashboard;
+- evitar entrar a /usuarios sin sesión;
+- redirigir al login.
+
+
+19. COMANDOS PARA CREAR INTERCEPTORS
+------------------------------------
+
+Crear interceptor:
+
+ng generate interceptor core/interceptors/auth --skip-tests
+
+Forma corta:
+
+ng g interceptor core/interceptors/auth --skip-tests
+
+Uso:
+Un interceptor sirve para modificar o revisar peticiones HTTP.
+
+Ejemplo:
+- agregar token;
+- manejar errores globales;
+- revisar respuestas del backend.
+
+
+20. COMANDOS PARA CREAR ENVIRONMENTS
+------------------------------------
+
+Crear archivos de environment:
+
+ng generate environments
+
+Esto genera archivos para manejar configuraciones por ambiente.
+
+Ejemplo:
+
+src/environments/
+  environment.ts
+  environment.development.ts
+
+Uso común:
+
+environment.ts:
+- configuración de producción.
+
+environment.development.ts:
+- configuración local de desarrollo.
+
+Ejemplo de uso:
+- URL del backend local;
+- URL del backend en producción;
+- claves públicas;
+- configuración general.
+
+
+21. ESTRUCTURA PARA UNA TABLA DINÁMICA
+--------------------------------------
+
+Una tabla dinámica debe estar en shared porque se puede reutilizar en varios módulos.
+
+Comando:
+
+ng g c shared/components/dynamic-table --standalone --style=scss --skip-tests
+
+Estructura:
+
+shared/components/dynamic-table/
+  dynamic-table.ts
+  dynamic-table.html
+  dynamic-table.scss
+
+Responsabilidad de dynamic-table.ts:
+- recibir columnas;
+- recibir datos;
+- recibir configuración;
+- emitir eventos como editar, eliminar, seleccionar;
+- manejar filtros visuales si son parte de la tabla;
+- manejar paginación si la tabla lo requiere.
+
+Responsabilidad de dynamic-table.html:
+- pintar la tabla;
+- recorrer columnas;
+- mostrar encabezados;
+- mostrar filas;
+- mostrar botones de acción.
+
+Responsabilidad de dynamic-table.scss:
+- estilos exclusivos de la tabla;
+- responsividad de la tabla;
+- diseño visual de encabezados, filas y acciones.
+
+No debe hacer:
+- consultar directamente el backend;
+- traer usuarios;
+- guardar productos;
+- crear ventas;
+- autenticar;
+- decidir reglas del negocio.
+
+
+22. EJEMPLO DE FEATURE USANDO TABLA DINÁMICA
+--------------------------------------------
+
+Supongamos un módulo de usuarios.
+
+Estructura:
+
+features/usuarios/
+  pages/
+    usuarios-page/
+      usuarios-page.ts
+      usuarios-page.html
+      usuarios-page.scss
+
+  components/
+    usuario-form/
+      usuario-form.ts
+      usuario-form.html
+      usuario-form.scss
+
+  services/
+    usuarios.service.ts
+
+  models/
+    usuario.model.ts
+
+La page usuarios-page usa:
+- UsuariosService para obtener datos;
+- DynamicTableComponent para mostrar datos;
+- UsuarioFormComponent para registrar o editar usuarios.
+
+La tabla no sabe de dónde vienen los usuarios.
+Solo recibe datos.
+
+El servicio no sabe cómo se pinta la tabla.
+Solo entrega datos.
+
+La page conecta todo.
+
+
+23. ESTRUCTURA PARA FORMULARIOS
+-------------------------------
+
+Un formulario específico debe estar dentro de la feature correspondiente.
+
+Ejemplo:
+
+features/productos/components/producto-form/
+  producto-form.ts
+  producto-form.html
+  producto-form.scss
+
+Comando:
+
+ng g c features/productos/components/producto-form --standalone --style=scss --skip-tests
+
+Responsabilidad:
+- pintar inputs;
+- validar campos visualmente;
+- emitir datos al guardar;
+- recibir datos iniciales si es edición.
+
+No debe:
+- decidir toda la navegación;
+- consultar todos los productos;
+- manejar la tabla;
+- controlar toda la página.
+
+
+24. ESTRUCTURA PARA PÁGINAS
+---------------------------
+
+Las páginas deben estar dentro de:
+
+features/nombre-feature/pages/nombre-page/
+
+Ejemplo:
+
+ng g c features/productos/pages/productos-page --standalone --style=scss --skip-tests
+
+Estructura:
+
+features/productos/pages/productos-page/
+  productos-page.ts
+  productos-page.html
+  productos-page.scss
+
+Responsabilidad:
+- conectar servicios;
+- preparar datos;
+- mostrar componentes hijos;
+- manejar estado principal de la vista;
+- responder a eventos de la tabla o formulario.
+
+
+25. ESTRUCTURA PARA LAYOUT
+--------------------------
+
+El layout contiene elementos fijos de interfaz.
+
+Ejemplo:
+
+layout/
+  header/
+    header.ts
+    header.html
+    header.scss
+
+  sidebar/
+    sidebar.ts
+    sidebar.html
+    sidebar.scss
+
+  footer/
+    footer.ts
+    footer.html
+    footer.scss
+
+Comandos:
+
+ng g c layout/header --standalone --style=scss --skip-tests
+ng g c layout/sidebar --standalone --style=scss --skip-tests
+ng g c layout/footer --standalone --style=scss --skip-tests
+
+Regla:
+El layout no debe contener reglas de negocio.
+Solo organiza la estructura visual general.
+
+
+26. ESTRUCTURA PARA AUTENTICACIÓN
+---------------------------------
+
+Ejemplo:
+
+features/auth/
+  pages/
+    login-page/
+      login-page.ts
+      login-page.html
+      login-page.scss
+
+  services/
+    auth.service.ts
+
+  models/
+    login-request.model.ts
+    user-session.model.ts
+
+Comandos:
+
+ng g c features/auth/pages/login-page --standalone --style=scss --skip-tests
+ng g s features/auth/services/auth --skip-tests
+
+
+27. ESTRUCTURA PARA API
+-----------------------
+
+Si varios servicios consumen un backend, puede existir un api.service.ts global.
+
+Ejemplo:
+
+core/services/api.service.ts
+
+Comando:
+
+ng g s core/services/api --skip-tests
+
+Responsabilidad:
+- centralizar URL base;
+- encapsular métodos HTTP comunes;
+- evitar repetir lógica de peticiones.
+
+Pero cada feature puede tener su propio servicio especializado.
+
+Ejemplo:
+- usuarios.service.ts usa ApiService;
+- productos.service.ts usa ApiService;
+- ventas.service.ts usa ApiService.
+
+
+28. REGLA DE NOMBRES
+--------------------
+
+Usar nombres claros y consistentes.
+
+Componentes:
+- dynamic-table
+- usuario-form
+- productos-page
+- login-page
+
+Servicios:
+- usuarios.service.ts
+- auth.service.ts
+- api.service.ts
+
+Modelos:
+- usuario.model.ts
+- producto.model.ts
+- venta.model.ts
+
+Guards:
+- auth.guard.ts
+
+Interceptors:
+- auth.interceptor.ts
+
+Evitar nombres vagos:
+- cosas.service.ts
+- datos.component.ts
+- prueba.ts
+- componente1.ts
+- nuevo.ts
+
+
+29. REGLA DE RESPONSABILIDAD ÚNICA
+----------------------------------
+
+Cada archivo debe responder claramente a una pregunta.
+
+Ejemplos:
+
+dynamic-table:
+¿Qué hace?
+Muestra tablas dinámicas.
+
+usuarios.service:
+¿Qué hace?
+Maneja datos y operaciones de usuarios.
+
+usuario.model:
+¿Qué hace?
+Define la estructura de un usuario.
+
+usuarios-page:
+¿Qué hace?
+Organiza la pantalla de usuarios.
+
+auth.guard:
+¿Qué hace?
+Protege rutas.
+
+api.service:
+¿Qué hace?
+Centraliza peticiones HTTP comunes.
+
+Si un archivo hace demasiadas cosas, debe dividirse.
+
+
+30. REGLAS PARA NO MEZCLAR RESPONSABILIDADES
+--------------------------------------------
+
+No mezclar:
+
+HTML con lógica pesada.
+SCSS con reglas de negocio.
+Servicios con diseño visual.
+Modelos con peticiones HTTP.
+Tablas genéricas con lógica específica.
+Componentes reutilizables con datos fijos.
+Pages con todo el HTML de todos los componentes.
+
+Ejemplo incorrecto:
+Una página de usuarios que contiene:
+- tabla completa;
+- formulario completo;
+- validaciones;
+- llamadas HTTP;
+- estilos de todos los elementos;
+- lógica de sesión;
+- lógica de productos.
+
+Ejemplo correcto:
+usuarios-page conecta:
+- UsuariosService;
+- DynamicTableComponent;
+- UsuarioFormComponent.
+
+
+31. EJEMPLO COMPLETO DE ESTRUCTURA PARA UN MÓDULO
+-------------------------------------------------
+
+features/inventario/
+  pages/
+    inventario-page/
+      inventario-page.ts
+      inventario-page.html
+      inventario-page.scss
+
+  components/
+    producto-form/
+      producto-form.ts
+      producto-form.html
+      producto-form.scss
+
+    stock-badge/
+      stock-badge.ts
+      stock-badge.html
+      stock-badge.scss
+
+  services/
+    inventario.service.ts
+
+  models/
+    producto.model.ts
+    movimiento-inventario.model.ts
+
+shared/
+  components/
+    dynamic-table/
+      dynamic-table.ts
+      dynamic-table.html
+      dynamic-table.scss
+
+    confirm-dialog/
+      confirm-dialog.ts
+      confirm-dialog.html
+      confirm-dialog.scss
+
+
+32. COMANDOS PARA CREAR ESTA ESTRUCTURA
+---------------------------------------
+
+Crear página principal:
+
+ng g c features/inventario/pages/inventario-page --standalone --style=scss --skip-tests
+
+Crear formulario:
+
+ng g c features/inventario/components/producto-form --standalone --style=scss --skip-tests
+
+Crear badge:
+
+ng g c features/inventario/components/stock-badge --standalone --style=scss --skip-tests
+
+Crear servicio:
+
+ng g s features/inventario/services/inventario --skip-tests
+
+Crear modelo:
+
+ng g interface features/inventario/models/producto
+
+Crear tabla dinámica compartida:
+
+ng g c shared/components/dynamic-table --standalone --style=scss --skip-tests
+
+Crear diálogo de confirmación:
+
+ng g c shared/components/confirm-dialog --standalone --style=scss --skip-tests
+
+
+33. CUÁNDO CREAR UN COMPONENTE NUEVO
+------------------------------------
+
+Crear un componente nuevo cuando:
+
+- una parte visual se repite;
+- una sección tiene demasiadas líneas de HTML;
+- una parte tiene lógica visual propia;
+- una parte puede reutilizarse en otra página;
+- el archivo actual ya se volvió difícil de leer.
+
+Ejemplos:
+- tabla;
+- formulario;
+- card;
+- modal;
+- buscador;
+- menú lateral;
+- barra superior;
+- filtro;
+- badge;
+- selector.
+
+
+34. CUÁNDO NO CREAR UN COMPONENTE NUEVO
+---------------------------------------
+
+No crear un componente nuevo cuando:
+
+- solo se usará una línea simple de HTML;
+- no tiene lógica propia;
+- no se reutilizará;
+- dividirlo vuelve más confuso el código.
+
+La separación debe ayudar, no complicar.
+
+
+35. REGLA PARA SHARED
+---------------------
+
+Poner en shared solo lo que sea realmente reutilizable.
+
+Correcto:
+- dynamic-table;
+- confirm-dialog;
+- search-box;
+- loading-spinner;
+- empty-state;
+- status-badge genérico.
+
+Incorrecto:
+- usuario-form;
+- producto-form;
+- venta-form;
+- alumnos-page;
+- clientes.service.
+
+Esos pertenecen a su feature.
+
+
+36. REGLA PARA CORE
+-------------------
+
+Poner en core lo global.
+
+Correcto:
+- api.service;
+- auth.guard;
+- auth.interceptor;
+- storage.service;
+- notification.service.
+
+Incorrecto:
+- tabla dinámica;
+- formulario de usuario;
+- card de producto;
+- página de ventas.
+
+
+37. REGLA PARA FEATURES
+-----------------------
+
+Cada feature debe contener lo específico de una sección del sistema.
+
+Ejemplos:
+- usuarios;
+- productos;
+- ventas;
+- reportes;
+- auth;
+- dashboard.
+
+Dentro de cada feature pueden existir:
+- pages;
+- components;
+- services;
+- models.
+
+
+38. ESTRUCTURA MÍNIMA PARA PROYECTOS PEQUEÑOS
+---------------------------------------------
+
+Para un proyecto muy pequeño:
+
+src/app/
+  components/
+  services/
+  models/
+  app.routes.ts
+  app.config.ts
+
+Pero si el proyecto crecerá, es mejor iniciar con:
+
+src/app/
+  core/
+  shared/
+  features/
+  layout/
+  models/
+
+
+39. ESTRUCTURA RECOMENDADA PARA CLASE
+-------------------------------------
+
+Para enseñar Angular de forma clara:
+
+src/app/
+  core/
+    services/
+
+  shared/
+    components/
+
+  features/
+    ejemplo/
+      pages/
+      components/
+      services/
+      models/
+
+  app.routes.ts
+  app.config.ts
+
+Esto ayuda a que el alumno entienda:
+- qué es reutilizable;
+- qué es específico;
+- qué es global;
+- qué organiza la pantalla;
+- qué maneja datos.
+
+
+40. COMANDOS MÁS USADOS
+-----------------------
+
+Crear componente standalone con HTML y SCSS separados:
+
+ng g c ruta/nombre --standalone --style=scss --skip-tests
+
+Crear componente standalone con HTML inline:
+
+ng g c ruta/nombre --standalone --inline-template --style=scss --skip-tests
+
+Crear componente standalone con SCSS inline:
+
+ng g c ruta/nombre --standalone --inline-style --skip-tests
+
+Crear componente standalone totalmente inline:
+
+ng g c ruta/nombre --standalone --inline-template --inline-style --skip-tests
+
+Crear servicio:
+
+ng g s ruta/nombre --skip-tests
+
+Crear interface:
+
+ng g interface ruta/nombre
+
+Crear guard:
+
+ng g guard ruta/nombre --skip-tests
+
+Crear interceptor:
+
+ng g interceptor ruta/nombre --skip-tests
+
+Crear environments:
+
+ng g environments
+
+Ejecutar proyecto:
+
+ng serve
+
+Ejecutar en otro puerto:
+
+ng serve --port 4300
+
+Ejecutar en red local:
+
+ng serve --host 0.0.0.0 --port 4200
+
+
+41. RECOMENDACIÓN FINAL DE USO
+------------------------------
+
+Para proyectos escolares o profesionales medianos, usar esta regla:
+
+- Pages para pantallas completas.
+- Components para piezas visuales.
+- Services para lógica y datos.
+- Models para estructuras.
+- Shared para reutilizables.
+- Core para lógica global.
+- Layout para estructura visual fija.
+- Routes para navegación.
+- Environments para configuración por ambiente.
+
+La estructura debe permitir que cualquier persona vea un archivo y entienda rápidamente qué hace, dónde pertenece y qué no debería hacer.
+
+
+
+
+===========================================================
+GUÍA PARA ESTRUCTURAR EL BACKEND
+===========================================================
+
+Esta sección complementa la estructura de Angular con una forma ordenada de organizar el backend.
+
+El objetivo es que el backend también respete la separación de responsabilidades:
+
+- Las rutas reciben las peticiones HTTP.
+- Los controladores conectan la ruta con la lógica.
+- Los servicios contienen la lógica principal.
+- Los modelos definen la estructura de los datos.
+- Los archivos de datos simulan o administran almacenamiento.
+- La configuración centraliza valores generales.
+- main.py inicializa la aplicación.
+
+
+42. ESTRUCTURA GENERAL RECOMENDADA PARA BACKEND
+-----------------------------------------------
+
+Ejemplo usando FastAPI:
+
+backend/
+  app/
+    controllers/
+      usuarios_controller.py
+      productos_controller.py
+      ventas_controller.py
+
+    routes/
+      usuarios_routes.py
+      productos_routes.py
+      ventas_routes.py
+
+    services/
+      usuarios_service.py
+      productos_service.py
+      ventas_service.py
+
+    models/
+      usuario_model.py
+      producto_model.py
+      venta_model.py
+
+    data/
+      usuarios_data.py
+      productos_data.py
+      ventas_data.py
+
+    core/
+      config.py
+      cors.py
+
+    main.py
+
+  requirements.txt
+  README.md
+
+
+43. EXPLICACIÓN DE CADA CARPETA DEL BACKEND
+-------------------------------------------
+
+43.1. app/
+----------
+
+Contiene todo el código principal del backend.
+
+No debe mezclarse con archivos del frontend.
+No debe contener carpetas de Angular.
+No debe contener node_modules.
+
+43.2. controllers/
+------------------
+
+Los controladores reciben la solicitud desde las rutas y llaman a los servicios.
+
+Responsabilidad:
+- conectar rutas con servicios;
+- recibir parámetros;
+- devolver respuestas;
+- lanzar errores HTTP si corresponde;
+- mantener limpio el archivo de rutas.
+
+Ejemplo:
+
+controllers/
+  usuarios_controller.py
+
+El controlador no debe contener toda la lógica de negocio si esta puede estar en un servicio.
+
+43.3. routes/
+-------------
+
+Las rutas definen los endpoints del backend.
+
+Ejemplos:
+- GET /usuarios
+- GET /usuarios/{id}
+- POST /usuarios
+- PUT /usuarios/{id}
+- DELETE /usuarios/{id}
+
+Responsabilidad:
+- declarar URLs;
+- declarar métodos HTTP;
+- recibir parámetros de ruta, query o body;
+- llamar al controlador correspondiente.
+
+Las rutas no deben contener lógica larga.
+
+43.4. services/
+---------------
+
+Los servicios contienen la lógica de negocio.
+
+Responsabilidad:
+- buscar datos;
+- validar reglas;
+- crear registros;
+- actualizar registros;
+- eliminar registros;
+- aplicar filtros;
+- coordinar operaciones internas.
+
+Ejemplo:
+
+services/
+  usuarios_service.py
+
+Un servicio de usuarios no debe manejar productos, ventas o autenticación si no le corresponde.
+
+43.5. models/
+-------------
+
+Los modelos definen la estructura de los datos.
+
+En FastAPI normalmente se usan modelos con Pydantic.
+
+Ejemplo:
+
+models/
+  usuario_model.py
+
+Responsabilidad:
+- definir qué campos tiene un dato;
+- validar tipos;
+- separar modelos de lectura, creación o actualización si es necesario.
+
+Ejemplo conceptual:
+- Usuario
+- UsuarioCreate
+- UsuarioUpdate
+
+43.6. data/
+-----------
+
+La carpeta data puede usarse para simular una base de datos durante clase.
+
+Ejemplo:
+
+data/
+  usuarios_data.py
+
+Responsabilidad:
+- almacenar listas temporales;
+- simular datos iniciales;
+- centralizar datos de prueba.
+
+Ejemplo:
+
+usuarios_db = []
+
+En proyectos reales, esta carpeta puede reemplazarse por:
+- repositories/
+- database/
+- conexión a SQL;
+- conexión a MongoDB;
+- conexión a Firebase;
+- ORM como SQLAlchemy.
+
+43.7. core/
+-----------
+
+La carpeta core contiene configuración general del backend.
+
+Ejemplos:
+
+core/
+  config.py
+  cors.py
+
+Responsabilidad:
+- configurar CORS;
+- definir constantes;
+- cargar variables de entorno;
+- centralizar configuraciones globales.
+
+43.8. main.py
+-------------
+
+Archivo principal del backend.
+
+Responsabilidad:
+- crear la instancia de FastAPI;
+- configurar CORS;
+- incluir las rutas;
+- definir endpoint raíz si se requiere.
+
+No debe llenarse con toda la lógica del sistema.
+
+
+44. ESTRUCTURA BÁSICA DE main.py
+--------------------------------
+
+Ejemplo conceptual:
+
+from fastapi import FastAPI
+from app.routes.usuarios_routes import router as usuarios_router
+from app.core.cors import configurar_cors
+
+app = FastAPI(
+    title="API del sistema",
+    version="1.0.0"
+)
+
+configurar_cors(app)
+
+app.include_router(usuarios_router, prefix="/usuarios", tags=["Usuarios"])
+
+@app.get("/")
+def inicio():
+    return {"mensaje": "API funcionando correctamente"}
+
+Regla:
+main.py solo inicializa y conecta partes del backend.
+
+
+45. ESTRUCTURA DE UN MODELO
+---------------------------
+
+Archivo:
+
+app/models/usuario_model.py
+
+Ejemplo:
+
+from pydantic import BaseModel, EmailStr
+
+
+class Usuario(BaseModel):
+    id: int
+    nombre: str
+    correo: EmailStr
+    activo: bool
+
+
+class UsuarioCreate(BaseModel):
+    nombre: str
+    correo: EmailStr
+    activo: bool = True
+
+
+class UsuarioUpdate(BaseModel):
+    nombre: str | None = None
+    correo: EmailStr | None = None
+    activo: bool | None = None
+
+Regla:
+Los modelos no deben consultar datos.
+Los modelos no deben guardar datos.
+Los modelos solo definen estructura y validación.
+
+
+46. ESTRUCTURA DE DATA
+---------------------
+
+Archivo:
+
+app/data/usuarios_data.py
+
+Ejemplo:
+
+usuarios_db = [
+    {
+        "id": 1,
+        "nombre": "Ana López",
+        "correo": "ana@example.com",
+        "activo": True
+    },
+    {
+        "id": 2,
+        "nombre": "Carlos Pérez",
+        "correo": "carlos@example.com",
+        "activo": True
+    }
+]
+
+Regla:
+data puede usarse como base de datos simulada para prácticas.
+No debe contener lógica compleja.
+
+
+47. ESTRUCTURA DE UN SERVICE
+----------------------------
+
+Archivo:
+
+app/services/usuarios_service.py
+
+Ejemplo:
+
+from fastapi import HTTPException
+from app.data.usuarios_data import usuarios_db
+from app.models.usuario_model import Usuario, UsuarioCreate, UsuarioUpdate
+
+
+def obtener_usuarios() -> list[Usuario]:
+    return usuarios_db
+
+
+def obtener_usuario_por_id(usuario_id: int) -> Usuario:
+    for usuario in usuarios_db:
+        if usuario["id"] == usuario_id:
+            return usuario
+
+    raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+
+def crear_usuario(datos: UsuarioCreate) -> Usuario:
+    nuevo_id = len(usuarios_db) + 1
+
+    nuevo_usuario = {
+        "id": nuevo_id,
+        "nombre": datos.nombre,
+        "correo": datos.correo,
+        "activo": datos.activo
+    }
+
+    usuarios_db.append(nuevo_usuario)
+
+    return nuevo_usuario
+
+
+def actualizar_usuario(usuario_id: int, datos: UsuarioUpdate) -> Usuario:
+    usuario = obtener_usuario_por_id(usuario_id)
+
+    if datos.nombre is not None:
+        usuario["nombre"] = datos.nombre
+
+    if datos.correo is not None:
+        usuario["correo"] = datos.correo
+
+    if datos.activo is not None:
+        usuario["activo"] = datos.activo
+
+    return usuario
+
+
+def eliminar_usuario(usuario_id: int) -> dict:
+    usuario = obtener_usuario_por_id(usuario_id)
+    usuarios_db.remove(usuario)
+
+    return {"mensaje": "Usuario eliminado correctamente"}
+
+Responsabilidad del service:
+- manejar la lógica de usuarios;
+- validar existencia;
+- modificar datos;
+- devolver resultados.
+
+No debe:
+- definir rutas;
+- contener HTML;
+- depender de Angular;
+- manejar lógica visual.
+
+
+48. ESTRUCTURA DE UN CONTROLLER
+-------------------------------
+
+Archivo:
+
+app/controllers/usuarios_controller.py
+
+Ejemplo:
+
+from app.models.usuario_model import Usuario, UsuarioCreate, UsuarioUpdate
+from app.services import usuarios_service
+
+
+def listar_usuarios() -> list[Usuario]:
+    return usuarios_service.obtener_usuarios()
+
+
+def buscar_usuario(usuario_id: int) -> Usuario:
+    return usuarios_service.obtener_usuario_por_id(usuario_id)
+
+
+def registrar_usuario(datos: UsuarioCreate) -> Usuario:
+    return usuarios_service.crear_usuario(datos)
+
+
+def editar_usuario(usuario_id: int, datos: UsuarioUpdate) -> Usuario:
+    return usuarios_service.actualizar_usuario(usuario_id, datos)
+
+
+def borrar_usuario(usuario_id: int) -> dict:
+    return usuarios_service.eliminar_usuario(usuario_id)
+
+Responsabilidad del controller:
+- servir como capa intermedia entre rutas y servicios;
+- mantener rutas limpias;
+- facilitar lectura del proyecto.
+
+
+49. ESTRUCTURA DE ROUTES
+------------------------
+
+Archivo:
+
+app/routes/usuarios_routes.py
+
+Ejemplo:
+
+from fastapi import APIRouter
+from app.models.usuario_model import Usuario, UsuarioCreate, UsuarioUpdate
+from app.controllers import usuarios_controller
+
+router = APIRouter()
+
+
+@router.get("/", response_model=list[Usuario])
+def obtener_usuarios():
+    return usuarios_controller.listar_usuarios()
+
+
+@router.get("/{usuario_id}", response_model=Usuario)
+def obtener_usuario(usuario_id: int):
+    return usuarios_controller.buscar_usuario(usuario_id)
+
+
+@router.post("/", response_model=Usuario)
+def crear_usuario(datos: UsuarioCreate):
+    return usuarios_controller.registrar_usuario(datos)
+
+
+@router.put("/{usuario_id}", response_model=Usuario)
+def actualizar_usuario(usuario_id: int, datos: UsuarioUpdate):
+    return usuarios_controller.editar_usuario(usuario_id, datos)
+
+
+@router.delete("/{usuario_id}")
+def eliminar_usuario(usuario_id: int):
+    return usuarios_controller.borrar_usuario(usuario_id)
+
+Responsabilidad de routes:
+- definir endpoint;
+- definir método HTTP;
+- recibir parámetros;
+- llamar controlador.
+
+No debe:
+- tener lógica larga;
+- manipular directamente toda la base de datos;
+- mezclar varias entidades sin necesidad.
+
+
+50. CONFIGURACIÓN DE CORS
+-------------------------
+
+Cuando Angular consume un backend FastAPI, normalmente se necesita configurar CORS.
+
+Archivo:
+
+app/core/cors.py
+
+Ejemplo:
+
+from fastapi.middleware.cors import CORSMiddleware
+
+
+def configurar_cors(app):
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "http://localhost:4200",
+            "http://127.0.0.1:4200"
+        ],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"]
+    )
+
+Uso en main.py:
+
+from app.core.cors import configurar_cors
+
+configurar_cors(app)
+
+Regla:
+CORS debe estar centralizado.
+No conviene configurarlo directamente en muchos archivos.
+
+
+51. REQUIREMENTS.TXT
+--------------------
+
+El archivo requirements.txt indica las dependencias del backend.
+
+Ejemplo:
+
+fastapi
+uvicorn
+pydantic[email]
+
+Instalar dependencias:
+
+pip install -r requirements.txt
+
+Crear requirements.txt desde el entorno actual:
+
+pip freeze > requirements.txt
+
+
+52. COMANDOS PARA CREAR EL BACKEND
+----------------------------------
+
+Crear carpeta principal:
+
+mkdir backend
+
+Entrar a la carpeta:
+
+cd backend
+
+Crear entorno virtual:
+
+python -m venv venv
+
+Activar entorno virtual en Windows:
+
+venv\Scripts\activate
+
+Activar entorno virtual en Linux o macOS:
+
+source venv/bin/activate
+
+Instalar FastAPI y Uvicorn:
+
+pip install fastapi uvicorn pydantic[email]
+
+Crear archivo requirements.txt:
+
+pip freeze > requirements.txt
+
+
+53. COMANDOS PARA CREAR CARPETAS DEL BACKEND
+--------------------------------------------
+
+Desde la carpeta backend:
+
+mkdir app
+mkdir app\controllers
+mkdir app\routes
+mkdir app\services
+mkdir app\models
+mkdir app\data
+mkdir app\core
+
+En Linux o macOS:
+
+mkdir -p app/controllers app/routes app/services app/models app/data app/core
+
+
+54. COMANDOS PARA CREAR ARCHIVOS DEL BACKEND EN WINDOWS
+-------------------------------------------------------
+
+Desde backend:
+
+type nul > app\main.py
+type nul > app\controllers\usuarios_controller.py
+type nul > app\routes\usuarios_routes.py
+type nul > app\services\usuarios_service.py
+type nul > app\models\usuario_model.py
+type nul > app\data\usuarios_data.py
+type nul > app\core\cors.py
+type nul > app\core\config.py
+type nul > requirements.txt
+type nul > README.md
+
+
+55. COMANDOS PARA CREAR ARCHIVOS DEL BACKEND EN LINUX O MACOS
+-------------------------------------------------------------
+
+Desde backend:
+
+touch app/main.py
+touch app/controllers/usuarios_controller.py
+touch app/routes/usuarios_routes.py
+touch app/services/usuarios_service.py
+touch app/models/usuario_model.py
+touch app/data/usuarios_data.py
+touch app/core/cors.py
+touch app/core/config.py
+touch requirements.txt
+touch README.md
+
+
+56. EJECUTAR EL BACKEND
+-----------------------
+
+Si main.py está dentro de app:
+
+uvicorn app.main:app --reload
+
+Ejecutar en puerto específico:
+
+uvicorn app.main:app --reload --port 8000
+
+Ejecutar visible en red local:
+
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+Después de ejecutar, normalmente la API queda disponible en:
+
+http://127.0.0.1:8000
+
+Documentación automática:
+
+http://127.0.0.1:8000/docs
+
+
+57. RELACIÓN ENTRE FRONTEND Y BACKEND
+-------------------------------------
+
+Angular consume el backend mediante HTTP.
+
+Ejemplo de flujo:
+
+Usuario hace clic en Angular
+        |
+        v
+Componente Angular llama a un servicio
+        |
+        v
+Servicio Angular usa HttpClient
+        |
+        v
+FastAPI recibe la petición en routes
+        |
+        v
+El controller procesa la petición
+        |
+        v
+El service ejecuta la lógica
+        |
+        v
+data o base de datos entrega/modifica información
+        |
+        v
+FastAPI devuelve JSON
+        |
+        v
+Angular recibe JSON y actualiza la vista
+
+
+58. ESTRUCTURA RECOMENDADA DE ANGULAR + BACKEND
+-----------------------------------------------
+
+proyecto-completo/
+  frontend/
+    src/
+      app/
+        core/
+        shared/
+        features/
+        layout/
+        models/
+      environments/
+      styles.scss
+      main.ts
+    angular.json
+    package.json
+
+  backend/
+    app/
+      controllers/
+      routes/
+      services/
+      models/
+      data/
+      core/
+      main.py
+    requirements.txt
+    README.md
+
+Regla:
+Frontend y backend deben estar separados.
+
+No mezclar:
+- node_modules con backend;
+- venv con frontend;
+- archivos .ts dentro del backend;
+- archivos .py dentro del frontend.
+
+
+59. NOMENCLATURA RECOMENDADA BACKEND
+------------------------------------
+
+Para usuarios:
+
+usuario_model.py
+usuarios_data.py
+usuarios_service.py
+usuarios_controller.py
+usuarios_routes.py
+
+Para productos:
+
+producto_model.py
+productos_data.py
+productos_service.py
+productos_controller.py
+productos_routes.py
+
+Para ventas:
+
+venta_model.py
+ventas_data.py
+ventas_service.py
+ventas_controller.py
+ventas_routes.py
+
+Regla:
+- modelo en singular;
+- data, service, controller y routes normalmente en plural.
+
+
+60. RESPONSABILIDADES POR ARCHIVO EN BACKEND
+--------------------------------------------
+
+main.py:
+Inicializa FastAPI, CORS y rutas.
+
+routes:
+Define endpoints.
+
+controllers:
+Conecta endpoints con servicios.
+
+services:
+Contiene lógica de negocio.
+
+models:
+Define estructuras y validaciones.
+
+data:
+Simula almacenamiento o datos temporales.
+
+core:
+Configura aspectos globales.
+
+requirements.txt:
+Lista dependencias.
+
+README.md:
+Explica cómo instalar y ejecutar el backend.
+
+
+61. EJEMPLO DE ENDPOINTS PARA UNA ENTIDAD
+-----------------------------------------
+
+Para usuarios:
+
+GET /usuarios
+Devuelve todos los usuarios.
+
+GET /usuarios/{id}
+Devuelve un usuario por id.
+
+POST /usuarios
+Crea un usuario.
+
+PUT /usuarios/{id}
+Actualiza un usuario completo o parcial, según el diseño.
+
+DELETE /usuarios/{id}
+Elimina un usuario.
+
+Para productos:
+
+GET /productos
+GET /productos/{id}
+POST /productos
+PUT /productos/{id}
+DELETE /productos/{id}
+
+Para ventas:
+
+GET /ventas
+GET /ventas/{id}
+POST /ventas
+DELETE /ventas/{id}
+
+
+62. QUÉ NO DEBE HACER EL BACKEND
+--------------------------------
+
+El backend no debe:
+- contener HTML de Angular;
+- manejar estilos CSS;
+- saber cómo se ve la tabla;
+- depender de componentes visuales;
+- mezclar todas las entidades en un solo archivo gigante;
+- poner toda la lógica dentro de main.py;
+- duplicar rutas sin orden;
+- devolver respuestas inconsistentes sin estructura.
+
+
+63. QUÉ SÍ DEBE HACER EL BACKEND
+--------------------------------
+
+El backend sí debe:
+- exponer endpoints claros;
+- validar datos;
+- procesar reglas de negocio;
+- devolver JSON;
+- manejar errores HTTP;
+- separar rutas, servicios, modelos y datos;
+- permitir que Angular consuma información;
+- mantener una estructura entendible.
+
+
+64. FORMA DE TRABAJO RECOMENDADA
+--------------------------------
+
+Para construir una funcionalidad completa, seguir este orden:
+
+1. Definir el modelo.
+2. Crear datos simulados o conexión a base de datos.
+3. Crear el servicio.
+4. Crear el controlador.
+5. Crear las rutas.
+6. Registrar las rutas en main.py.
+7. Probar en /docs.
+8. Consumir desde Angular con HttpClient.
+9. Mostrar los datos en un componente o página.
+10. Separar componentes reutilizables si la vista crece.
+
+
+65. EJEMPLO DE ORDEN DE TRABAJO CON USUARIOS
+--------------------------------------------
+
+Paso 1:
+Crear app/models/usuario_model.py
+
+Paso 2:
+Crear app/data/usuarios_data.py
+
+Paso 3:
+Crear app/services/usuarios_service.py
+
+Paso 4:
+Crear app/controllers/usuarios_controller.py
+
+Paso 5:
+Crear app/routes/usuarios_routes.py
+
+Paso 6:
+Registrar la ruta en app/main.py
+
+Paso 7:
+Ejecutar:
+
+uvicorn app.main:app --reload
+
+Paso 8:
+Probar en:
+
+http://127.0.0.1:8000/docs
+
+Paso 9:
+Crear en Angular:
+
+ng g s features/usuarios/services/usuarios --skip-tests
+
+Paso 10:
+Consumir el endpoint desde Angular usando HttpClient.
+
+
+66. EJEMPLO DE SERVICIO ANGULAR CONECTADO AL BACKEND
+----------------------------------------------------
+
+Archivo:
+
+frontend/src/app/features/usuarios/services/usuarios.service.ts
+
+Ejemplo conceptual:
+
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { Usuario } from '../models/usuario.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UsuariosService {
+  private http = inject(HttpClient);
+
+  private apiUrl = 'http://127.0.0.1:8000/usuarios';
+
+  usuarios = signal<Usuario[]>([]);
+
+  cargarUsuarios() {
+    this.http.get<Usuario[]>(this.apiUrl).subscribe({
+      next: (respuesta) => {
+        this.usuarios.set(respuesta);
+      },
+      error: (error) => {
+        console.error('Error al cargar usuarios', error);
+      }
+    });
+  }
+}
+
+Regla:
+Angular no debe acceder directamente a la base de datos.
+Angular consume endpoints del backend.
+
+
+67. RELACIÓN ENTRE UNA TABLA DINÁMICA Y EL BACKEND
+--------------------------------------------------
+
+La tabla dinámica no debe consumir directamente el backend.
+
+Forma correcta:
+
+Backend:
+Entrega datos mediante API.
+
+UsuariosService de Angular:
+Consume la API.
+
+UsuariosPage:
+Obtiene datos del servicio.
+
+DynamicTableComponent:
+Recibe datos por input y los muestra.
+
+Flujo:
+
+Backend API
+  -> UsuariosService
+  -> UsuariosPage
+  -> DynamicTableComponent
+
+Forma incorrecta:
+
+DynamicTableComponent
+  -> consulta directamente http://127.0.0.1:8000/usuarios
+  -> mezcla tabla con lógica de usuarios
+
+La tabla debe ser genérica.
+El servicio debe encargarse de la comunicación.
+
+
+68. EJEMPLO DE ESTRUCTURA COMPLETA POR MÓDULO
+---------------------------------------------
+
+Backend:
+
+backend/
+  app/
+    models/
+      producto_model.py
+
+    data/
+      productos_data.py
+
+    services/
+      productos_service.py
+
+    controllers/
+      productos_controller.py
+
+    routes/
+      productos_routes.py
+
+Frontend:
+
+frontend/
+  src/
+    app/
+      features/
+        productos/
+          models/
+            producto.model.ts
+
+          services/
+            productos.service.ts
+
+          pages/
+            productos-page/
+              productos-page.ts
+              productos-page.html
+              productos-page.scss
+
+          components/
+            producto-form/
+              producto-form.ts
+              producto-form.html
+              producto-form.scss
+
+      shared/
+        components/
+          dynamic-table/
+            dynamic-table.ts
+            dynamic-table.html
+            dynamic-table.scss
+
+
+69. REGLA FINAL DE BACKEND
+--------------------------
+
+El backend debe ser independiente del frontend.
+
+El frontend pregunta.
+El backend responde.
+
+El frontend muestra.
+El backend procesa.
+
+El frontend maneja interacción visual.
+El backend maneja datos, validación y reglas.
+
+Si cada archivo respeta su responsabilidad, el sistema será más fácil de explicar, corregir, ampliar y mantener.

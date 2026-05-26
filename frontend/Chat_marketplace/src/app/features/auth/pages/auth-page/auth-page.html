@@ -1,0 +1,7 @@
+<main class="page">
+    @if(authService.modo() == 'login'){
+        <app-login-form></app-login-form>
+    }@else{
+        <app-register-form></app-register-form>
+    }
+</main> 

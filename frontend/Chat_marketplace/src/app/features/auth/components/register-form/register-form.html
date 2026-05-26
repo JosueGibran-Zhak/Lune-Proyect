@@ -1,0 +1,43 @@
+<div class="card">
+    <h2>Registrate</h2>
+    <div class="input-container">
+                <img src="assets/auth-icons/Mail.png" alt="Usuario">
+        <input  
+            required 
+            type="email" 
+            placeholder=" "  
+                >
+        <span>Correo</span>
+    </div>
+    <div class="input-container">
+                <img src="assets/auth-icons/User.png" alt="Usuario">
+        <input  
+            required 
+            type="text" 
+            placeholder=" "   
+                >
+        <span>Usuario</span>
+    </div>
+
+    <div class="input-container">
+                <img src="assets/auth-icons/Lock.png" alt="Usuario">
+        <input 
+            required 
+            type="password" 
+            placeholder=" "
+            
+                >
+        <span>Contraseña</span>
+    </div>
+    <div class="input-container">
+                <img src="assets/auth-icons/Lock.png" alt="Usuario">
+        <input 
+            required 
+            type="password"
+            placeholder=" "
+                >
+        <span>Confirmar contraseña</span>
+    </div>
+    <app-main-button texto="Crear usuario"></app-main-button>
+    <p>¿Tienes una cuenta? <a (click)="authService.mostrarLogin()"> Inicia sesión</a> </p>
+</div>

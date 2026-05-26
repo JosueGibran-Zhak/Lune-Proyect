@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+
+*{
+    box-sizing: border-box;
+    font-family: "Lato", sans-serif;
+}
+
+.card{
+    width: 300px;
+    height: 570px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+
+    background-color: rgba(217, 217, 217, 0.35);
+    border-radius: 10px;
+    border-left:0.3px solid rgb(224, 224, 224,25%);
+    border-right:0.3px solid rgb(219, 219, 219,25%);
+
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+
+    padding: 26px 26px;
+}
+
+h2{
+    margin: 50px 0;
+    color: rgb(255, 255, 255);
+    font-size: 1.7rem;
+    
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/*INPUTS*/
+
+.input-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.input-container input {
+    width: 100%;
+    max-height: 45px;
+    padding: 20px 15px 10px 55px;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    background-color: #f1f1f1;
+    font-size: 16px;
+    font-weight: 550;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 0 0 5px transparent;
+}
+
+.input-container span {
+    position: absolute;
+    left: 20%;
+    top: 0;
+    padding: 13px 15px;
+    color: rgb(0, 0, 0,50%);
+    font-size: 16px;
+    font-weight: 600;
+
+    transition: 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+.input-container img{
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    left: 5px;
+    color: rgb(0, 0, 0,50%);
+    font-size: 16px;
+    font-weight: 600;
+
+    transition: 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+.input-container input:focus + span,
+.input-container input:valid + span {
+    transform: translateY(-12px) translateX(-10px) scale(0.95);
+    transition: 0.3s ease-in-out;
+}
+
+.input-container input:focus, input:hover {
+    outline: none;
+    box-shadow: 0 0 0 2px #427BE3;
+}
+
+.card p{
+    color: #EDF0F4;
+}
+
+.card p a{
+    color: #94E0EC;
+    cursor: pointer;
+}
+.card p a:hover{
+    text-decoration-line:underline;
+}
