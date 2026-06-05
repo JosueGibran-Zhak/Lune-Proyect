@@ -1,0 +1,21 @@
+<div class="card">
+    <h2>Inicio de sesión</h2>
+    <div class="input-container">
+                <img src="assets/auth-icons/User.png" alt="Usuario">
+        <input  required type="text"    
+                >
+        <span>Usuario</span>
+    </div>
+
+    <div class="input-container">
+                <img src="assets/auth-icons/Lock.png" alt="Usuario">
+        <input required 
+            type="password"
+            
+                >
+        <span>Contraseña</span>
+    </div>
+    <app-main-button (clickeado)="iniciarSesion()"
+        texto="Iniciar sesión"/>
+    <p>¿No tienes una cuenta? <a (click)="authService.mostrarRegistro()"> Registrate</a> </p>
+</div>

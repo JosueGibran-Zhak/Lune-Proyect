@@ -1,0 +1,11 @@
+.add-bar {
+    position: absolute;
+    bottom: 20px;
+    right: 18px;
+    z-index: 10;
+    pointer-events: none;
+    
+    app-secondary-button {
+        pointer-events: all;
+    }
+}

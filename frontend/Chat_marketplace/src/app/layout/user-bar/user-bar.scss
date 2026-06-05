@@ -1,0 +1,27 @@
+.container-bar {
+    width: 100%;
+    height: 55px;
+    background-color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-content {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background-color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.user-name {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #17213a;
+}

@@ -1,0 +1,33 @@
+<nav class="navbar">
+    <app-search-bar></app-search-bar>
+    
+    @if (mode() === 'chat') {
+        <div class="buttons">
+            <!--Marketplace-->
+            <app-nav-button 
+            icono="assets/nav-buttons/marketplace.png" 
+            rutaRedireccion="/marketplace" 
+            />
+            
+            <!--Perfil-->
+            <app-nav-button 
+            icono="assets/nav-buttons/usuario.png"  
+            rutaRedireccion="/perfil"     
+            />
+        </div>
+    }
+    @if (mode() === 'marketplace') {
+        <div class="buttons">
+            <!--Chat-->
+            <app-nav-button 
+            icono="assets/nav-buttons/chat.png" rutaRedireccion="chat-contacts" 
+            />
+            <!--Favoritos-->
+            <app-nav-button 
+            icono="assets/nav-buttons/corazon.png"   
+            rutaRedireccion="/favoritos" 
+            />
+        </div>
+    }
+        
+</nav>
