@@ -1,0 +1,33 @@
+<div class="card">
+    <div class="card-imagen">
+        <img [src]="publicacion().imagenUrl" [alt]="publicacion().nombreProducto" />
+    </div>
+
+    <div class="card-info">
+        <div class="fila-principal">
+        <span class="nombre">{{ publicacion().nombreProducto }}</span>
+        <span class="precio">${{ publicacion().precio }}</span>
+        </div>
+
+        <div class="fila-secundaria" (click)="$event.stopPropagation()">
+        <span class="disponibilidad"
+            [class.disponible]="publicacion().estado === 'disponible'"
+            [class.pocas]="publicacion().estado === 'pocas'"
+            [class.agotado]="publicacion().estado === 'agotado'"
+        >
+            @if (publicacion().estado === 'disponible') { Disponible }
+            @if (publicacion().estado === 'pocas') { {{ publicacion().piezasRestantes }} unidades }
+            @if (publicacion().estado === 'agotado') { Agotado }
+        </span>
+
+        <div class="acciones">
+            <button mat-icon-button class="accion-btn">
+            <mat-icon>{{ publicacion().likeado ? 'thumb_up' : 'thumb_up_off_alt' }}</mat-icon>
+            </button>
+            <button mat-icon-button class="accion-btn">
+            <mat-icon>{{ publicacion().favorito ? 'favorite' : 'favorite_border' }}</mat-icon>
+            </button>
+        </div>
+        </div>
+    </div>
+</div>

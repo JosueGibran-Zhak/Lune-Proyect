@@ -1,0 +1,91 @@
+.card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(163, 181, 255, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 16px rgba(163, 181, 255, 0.4);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+
+    .card-imagen{
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+
+        img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        }
+    }
+
+    .card-info {
+        padding: 6px 8px 4px;
+
+        .fila-principal {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 2px;
+
+        .nombre {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d2d2d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 65%;
+        }
+
+        .precio {
+            font-size: 13px;
+            font-weight: 700;
+            color: #2d2d2d;
+            flex-shrink: 0;
+        }
+        }
+
+        .fila-secundaria {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .disponibilidad {
+            font-size: 12px;
+            font-weight: 600;
+
+            &.disponible { color: #4BBE8A; }
+            &.pocas      { color: #E8A64D; }
+            &.agotado    { color: #D96B7B; }
+        }
+        }
+    }
+}
+
+.acciones {
+    display: flex;
+    gap: 2px;
+
+    .accion-btn {
+        width: 30px;
+        height: 30px;
+        color: #A3B5FF;
+
+        mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        }
+
+        &:hover { color: #7c94f7; }
+    }
+}
