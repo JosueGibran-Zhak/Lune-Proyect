@@ -1,30 +1,28 @@
-import { Component,input,inject } from '@angular/core';
+import { Component,input} from '@angular/core';
 import { NavButton } from '../../shared/components/nav-button/nav-button';
-import { Router } from '@angular/router';
+import { BackButton } from '../../shared/components/back-button/back-button';
 
 @Component({
   selector: 'app-user-bar',
-  imports: [NavButton],
-  template: ` 
+  imports: [NavButton,BackButton],
+  template: `
     <div class="container-bar">
+      <app-back-button 
+        ruta="/chat-view">
+      </app-back-button>
 
-      <button
-          class="user-content"
-          type="button"
-          (click)="navegar()">
-
-      <!--CAMBIAR DESPUES LA RUTA AL AHCER LO DE USUARIOS-->
+        <div class="user-content">
           <app-nav-button
-            icono="/assets/nav-buttons/usuario.png" 
+            [icono]="avatar()"
             rutaRedireccion="/usuario"
+            onclick="navegar()"
           />
-
           <span class="user-name">
-              {{ nombre() }}
+            {{ nombre() }}
           </span>
+        </div>
 
-      </button>
-  </div>
+    </div>
   `,
   styleUrl: './user-bar.scss',
 })
@@ -32,11 +30,5 @@ export class UserBar {
 
   nombre = input.required<string>();
   avatar = input.required<string>();
-  ruta = input.required<string>();
 
-  private router = inject(Router);
-
-  navegar(): void {
-    this.router.navigate([this.ruta()]);
-  }
 }
