@@ -4,11 +4,11 @@ import { BackButton } from '../../shared/components/back-button/back-button';
 
 @Component({
   selector: 'app-user-bar',
-  imports: [NavButton,BackButton],
+  imports: [NavButton, BackButton],
   template: `
     <div class="container-bar">
       <app-back-button 
-        ruta="/chat-view">
+        ruta="/chat-contacts">
       </app-back-button>
 
         <div class="user-content">

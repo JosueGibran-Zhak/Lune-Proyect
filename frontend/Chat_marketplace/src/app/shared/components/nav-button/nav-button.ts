@@ -1,8 +1,10 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+
+import { CambioModo } from '../../../core/services/cambio-modo';
 
 import { Router } from '@angular/router';
 
@@ -20,9 +22,22 @@ export class NavButton {
   /*Signal para obtener la ruta de redirección como string */
   rutaRedireccion= input.required<string>();
 
+  modo = inject(CambioModo);
+
+
   //BORRAR DESPUES
   private router = inject(Router);
+
   navegar(): void{
-    this.router.navigate([this.rutaRedireccion()]);
+    const rutaRedireccion = this.rutaRedireccion();
+
+    if(rutaRedireccion.includes('chat')){
+      this.modo.mostrarSearchChat();
+    }
+    if(rutaRedireccion.includes('marketplace')){
+      this.modo.mostrarSearchMarketplace();
+    }
+
+    this.router.navigate([rutaRedireccion]);
   }
 }

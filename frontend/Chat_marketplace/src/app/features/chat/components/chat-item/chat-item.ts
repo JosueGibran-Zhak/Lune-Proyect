@@ -29,7 +29,6 @@ export class ChatItem {
   private redireccionar = inject(Router);
 
 IrAChatDetallado(){
-    console.log('Click detectado');
     this.redireccionar.navigate(['/chat-view'])
   }
 }

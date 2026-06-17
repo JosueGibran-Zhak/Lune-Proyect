@@ -3,7 +3,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
 import { ProductResume } from '../../models/product-resume';
-import { MarketplaceService } from '../../services/marketplace-service';
 
 @Component({
   selector: 'app-product-card',
@@ -15,5 +14,4 @@ import { MarketplaceService } from '../../services/marketplace-service';
 export class ProductCard {
   publicacion = input.required<ProductResume>();
 
-  
 }

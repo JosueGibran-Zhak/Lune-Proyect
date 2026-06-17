@@ -6,11 +6,11 @@
     gap: 2px;
 
     app-search-bar{
-        width: 70%;
+        flex: 1 1 auto;
+        min-width: 0;
     }
     .buttons{
         display: flex;
-        width: 30%;
         justify-content: flex-end;
     }
 }

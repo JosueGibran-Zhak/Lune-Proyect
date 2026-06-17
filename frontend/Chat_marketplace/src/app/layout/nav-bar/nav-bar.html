@@ -1,7 +1,7 @@
 <nav class="navbar">
     <app-search-bar></app-search-bar>
     
-    @if (mode() === 'chat') {
+    @if (valorModo.modo() === 'chat') {
         <div class="buttons">
             <!--Marketplace-->
             <app-nav-button 
@@ -16,7 +16,7 @@
             />
         </div>
     }
-    @if (mode() === 'marketplace') {
+    @if (valorModo.modo() === 'marketplace') {
         <div class="buttons">
             <!--Chat-->
             <app-nav-button 

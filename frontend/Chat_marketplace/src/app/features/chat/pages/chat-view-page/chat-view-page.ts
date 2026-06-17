@@ -10,7 +10,6 @@ import { ChatBody } from '../../../../layout/chat-body/chat-body';
     <app-user-bar
       nombre="Juan"
       avatar="/assets/nav-buttons/usuario.png"
-      ruta="/chat"
     />
     <app-chat-body></app-chat-body>
   </div>

@@ -1,20 +1,36 @@
 <div class="search-bar-wrapper">
     <div class="search-input-container">
-        <div class="inputContainer">
             <mat-icon class="search-icon">search</mat-icon>
-            <input
-            class="search-input"
-            type="text"
-            placeholder=""
-        />
-        </div>
+                <input
+                class="search-input"
+                type="text"
+                placeholder=""
+                />
         
+        @if (modoFiltro.modo() == 'marketplace') {
             <button
                 class="filter-btn"
                 mat-icon-button
                 aria-label="Filtros"
+                (click)="abrirFiltros()"
             >
                 <mat-icon>tune</mat-icon>
             </button>
+        }
+        
     </div>
+    @if (filtrosAbiertos()) {
+        <div class="filter-dropdown">
+            <span class="title">CATEGORÍAS</span>
+            @for (opcion of opciones; track opcion) {
+                <button
+                    type="button"
+                    class="filter-option"
+                    (click)="seleccionarFiltro(opcion)"
+                >
+                {{ opcion }}
+                </button>
+            }
+        </div>
+    }
 </div>

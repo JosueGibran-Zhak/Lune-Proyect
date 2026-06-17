@@ -1,6 +1,8 @@
-import { Component, input} from '@angular/core';
+import { Component, inject, input} from '@angular/core';
 import { SearchBar } from '../../shared/components/search-bar/search-bar';
 import { NavButton } from '../../shared/components/nav-button/nav-button';
+
+import { CambioModo } from '../../core/services/cambio-modo';
 
 export type NavbarMode = 'chat' | 'marketplace';
 
@@ -12,6 +14,6 @@ export type NavbarMode = 'chat' | 'marketplace';
   styleUrl: './nav-bar.scss',
 })
 export class NavBar {
-  //Por defecto está en el modo chat
-  mode = input<NavbarMode>('chat');
+
+  valorModo = inject(CambioModo);
 }

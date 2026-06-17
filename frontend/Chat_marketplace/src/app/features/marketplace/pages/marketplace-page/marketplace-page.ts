@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { NavBar } from "../../../../layout/nav-bar/nav-bar";
+import { MarketplaceBody } from '../../../../layout/marketplace-body/marketplace-body';
 
 @Component({
   selector: 'app-marketplace-page',
-  imports: [NavBar],
+  imports: [NavBar,MarketplaceBody],
   template: ` 
   
   <div class="page">
     <app-nav-bar mode="marketplace"></app-nav-bar>
+    <app-marketplace-body></app-marketplace-body>
   </div>
   
   `,

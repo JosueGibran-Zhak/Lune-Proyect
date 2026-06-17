@@ -9,17 +9,17 @@ import { ContactItem } from '../../features/chat/models/contact-item';
   selector: 'app-chat-contacts',
   standalone: true,
   imports: [ChatItem, ActionsBar],
-  template: ` 
+  template: `
   <div class="contacts-box">
     <div class="contacts-list">
       @for (contact of contacts(); track contact.id) {
         <app-chat-item
           [usuario]="contact.usuario"
           [noLeidos]="contact.noLeidos"
-        />
+        />  
       }
     </div>
-  
+
     <app-actions-bar
       (clickeado)="onAdd()"
     />
