@@ -6,6 +6,7 @@ import { UserSearchResult } from '../models/user-search-result';
   providedIn: 'root',
 })
 export class ChatService {
+  contactoSeleccionado = signal<ContactItem | null>(null);
 
   //BORRAR DESPUES, Base de datos momentanea para comprobar
   //como se ve en la vista
@@ -54,4 +55,5 @@ export class ChatService {
       )
     );
   }
+  
 }

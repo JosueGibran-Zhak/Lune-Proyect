@@ -1,5 +1,4 @@
-import { Component, inject, input } from '@angular/core';
-import { Router} from '@angular/router';
+import { Component,input, output } from '@angular/core';
 
 @Component({
   selector: 'app-chat-item',
@@ -7,27 +6,28 @@ import { Router} from '@angular/router';
   imports: [],
   template: ` 
   
-  <div class="chat-item" matRipple (click)="IrAChatDetallado()">
-    <div class="avatar">
+  <div class="chat-item" (click)="seleccionarContacto()">
+      <div class="avatar">
         <img src="assets/nav-buttons/usuario.png" [alt]="usuario()" class="avatar-img" />
-    </div>
+      </div>
 
-    <span class="usuario">{{ usuario() }}</span>
-  
-    @if (noLeidos() > 0) {
-      <span class="noLeidos">{{ noLeidos() }}</span>
-    }
-  </div>
+      <span class="usuario">{{ usuario() }}</span>
+    
+      @if (noLeidos() > 0) {
+        <span class="noLeidos">{{ noLeidos() }}</span>
+      }
+    </div>
   `,
   styleUrl: './chat-item.scss',
 })
 export class ChatItem {
+  id          = input.required<number>();  
   usuario     = input<string>('Usuario');
   noLeidos    = input<number>(0);
 
-  private redireccionar = inject(Router);
+  seleccionado = output<number>();
 
-IrAChatDetallado(){
-    this.redireccionar.navigate(['/chat-view'])
+  seleccionarContacto(): void {
+    this.seleccionado.emit(this.id());
   }
 }

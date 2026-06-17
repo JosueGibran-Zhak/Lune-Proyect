@@ -1,7 +1,8 @@
-import { Component, input, output,inject } from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import { ChatItem } from '../../features/chat/components/chat-item/chat-item';
 import { ActionsBar } from '../actions-bar/actions-bar';
 import { ContactItem } from '../../features/chat/models/contact-item';
+import { ChatService } from '../../features/chat/services/chat-service';
 
 import { Router } from '@angular/router';
 
@@ -16,8 +17,10 @@ import { Router } from '@angular/router';
     <div class="contacts-list">
       @for (contact of contacts(); track contact.id) {
         <app-chat-item
+          [id]="contact.id"
           [usuario]="contact.usuario"
           [noLeidos]="contact.noLeidos"
+          (seleccionado)="irAChat(contact.id)"
         />  
       }
     </div>
@@ -32,12 +35,19 @@ import { Router } from '@angular/router';
 export class ChatContacts {
 
   contacts = input<ContactItem[]>([]);
-
-  clickeado = output<void>();
+  chatService = inject(ChatService);
 
   private router = inject(Router);
 
   irAgregarContacto(): void {
     this.router.navigate(['/add-contact']);
+  }
+  irAChat(id: number): void {
+    const contacto = this.contacts().find(c => c.id === id);
+
+    if (!contacto) return;
+
+    this.chatService.contactoSeleccionado.set(contacto);
+    this.router.navigate(['/chat-view']);
   }
 }
