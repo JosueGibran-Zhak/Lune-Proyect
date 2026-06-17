@@ -15,7 +15,6 @@ import { CambioModo } from '../../../core/services/cambio-modo';
 })
 export class SearchBar {
   filtrosAbiertos = signal(false);
-  
   modoFiltro = inject(CambioModo);
   
   opciones = [

@@ -18,7 +18,6 @@ import { Router} from '@angular/router';
       <span class="noLeidos">{{ noLeidos() }}</span>
     }
   </div>
-  
   `,
   styleUrl: './chat-item.scss',
 })

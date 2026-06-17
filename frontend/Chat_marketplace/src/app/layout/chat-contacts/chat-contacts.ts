@@ -1,7 +1,9 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output,inject } from '@angular/core';
 import { ChatItem } from '../../features/chat/components/chat-item/chat-item';
 import { ActionsBar } from '../actions-bar/actions-bar';
 import { ContactItem } from '../../features/chat/models/contact-item';
+
+import { Router } from '@angular/router';
 
 
 //Es la estructura para mostrar la lista de todos los contactos registrados
@@ -21,7 +23,7 @@ import { ContactItem } from '../../features/chat/models/contact-item';
     </div>
 
     <app-actions-bar
-      (clickeado)="onAdd()"
+      (clickeado)="irAgregarContacto()"
     />
   </div>
   `,
@@ -33,7 +35,9 @@ export class ChatContacts {
 
   clickeado = output<void>();
 
-  onAdd(): void {
-    this.clickeado.emit();
+  private router = inject(Router);
+
+  irAgregarContacto(): void {
+    this.router.navigate(['/add-contact']);
   }
 }

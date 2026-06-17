@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { ContactItem } from '../models/contact-item';
+import { UserSearchResult } from '../models/user-search-result';
 
 @Injectable({
   providedIn: 'root',
@@ -22,4 +23,35 @@ export class ChatService {
     { id: 11, usuario: 'Ana Jazmin', noLeidos: 0 },
     { id: 12, usuario: 'Adrian',     noLeidos: 0 },
   ]);
+
+  readonly usuariosDisponibles = signal<UserSearchResult[]>([
+    { id: 16, usuario: 'Abigail Navarro', agregado: true },
+    { id: 20, usuario: 'Abigail Navarro F.', agregado: false },
+    { id: 21, usuario: 'Kenia Martínez', agregado: false },
+    { id: 22, usuario: 'Genesis López', agregado: false },
+  ]);
+
+  agregarContacto(usuario: UserSearchResult): void {
+    const yaExiste = this.contacts().some(contacto => contacto.id === usuario.id);
+
+    if (yaExiste) return;
+
+    this.contacts.update(contactos => [
+      ...contactos,
+      {
+        id: usuario.id,
+        usuario: usuario.usuario,
+        noLeidos: 0,
+        avatarUrl: usuario.avatarUrl,
+      }
+    ]);
+
+    this.usuariosDisponibles.update(usuarios =>
+      usuarios.map(u =>
+        u.id === usuario.id
+          ? { ...u, agregado: true }
+          : u
+      )
+    );
+  }
 }

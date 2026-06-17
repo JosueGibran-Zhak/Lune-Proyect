@@ -1,0 +1,24 @@
+.results-box {
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 28px;
+    min-height: 0;
+}
+
+.results-title {
+    margin: 0 0 12px 0;
+    text-align: center;
+    
+    color: #28448f;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.results-list {
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;
+    min-height: 0;
+}

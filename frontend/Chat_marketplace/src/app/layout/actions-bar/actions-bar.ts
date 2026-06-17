@@ -9,7 +9,7 @@ import { AddButton } from '../../shared/components/add-button/add-button';
 
   <div class="add-bar">
     <app-add-button
-      (clicked)="onAdd()"
+      (clickeado)="onAdd()"
     />
   </div>
 `,

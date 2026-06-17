@@ -1,0 +1,18 @@
+* {
+    box-sizing: border-box;
+    font-family: "Lato", sans-serif;
+}
+
+.page {
+    height: 100vh;
+    max-height: 100vh;
+    background: linear-gradient(to bottom, #e2f5ff, #a3b5ff);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.add-contact-page {
+    padding: 38px 23px;
+}
