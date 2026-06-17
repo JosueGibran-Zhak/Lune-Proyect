@@ -3,6 +3,7 @@ import { ActionsBar } from '../actions-bar/actions-bar';
 import { ProductCard } from '../../features/marketplace/components/product-card/product-card';
 import { MarketplaceService } from '../../features/marketplace/services/marketplace-service';
 
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-marketplace-body',
   standalone: true,
@@ -19,7 +20,7 @@ import { MarketplaceService } from '../../features/marketplace/services/marketpl
     </div>
 
     <app-actions-bar
-      
+      (clickeado)="irCrearPost()"
     />
   </div>
   `,
@@ -28,4 +29,10 @@ import { MarketplaceService } from '../../features/marketplace/services/marketpl
 export class MarketplaceBody {
 
   marketService = inject(MarketplaceService);
+
+  router = inject(Router);
+
+  irCrearPost(): void {
+    this.router.navigate(['/create-post']);
+  }
 }

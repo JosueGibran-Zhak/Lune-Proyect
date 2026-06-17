@@ -1,12 +1,14 @@
 import { Injectable, signal } from '@angular/core';
 import { ContactItem } from '../models/contact-item';
 import { UserSearchResult } from '../models/user-search-result';
+import { ChatMessage } from '../models/chat-message';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
   contactoSeleccionado = signal<ContactItem | null>(null);
+  private nextMessageId = 1;
 
   //BORRAR DESPUES, Base de datos momentanea para comprobar
   //como se ve en la vista
@@ -32,6 +34,31 @@ export class ChatService {
     { id: 22, usuario: 'Genesis López', agregado: false },
   ]);
 
+  private mensajes = signal<ChatMessage[]>([
+    {
+      id: 1,
+      contactId: 1,
+      texto: 'Qué es lo que estas probando?',
+      hora: '2:09 p.m.',
+      enviadoPorMi: false,
+    },
+    {
+      id: 2,
+      contactId: 1,
+      texto: 'Este es un texto de prueba para comprobar como se ve la letra.',
+      hora: '2:10 p.m.',
+      enviadoPorMi: true,
+    },
+    {
+      id: 3,
+      contactId: 1,
+      texto: 'No sé que es eso.',
+      hora: '2:13 p.m.',
+      enviadoPorMi: true,
+    },
+  ]);
+
+
   agregarContacto(usuario: UserSearchResult): void {
     const yaExiste = this.contacts().some(contacto => contacto.id === usuario.id);
 
@@ -56,4 +83,27 @@ export class ChatService {
     );
   }
   
+
+  mensajesChat = this.mensajes.asReadonly();
+
+  enviarMensaje(contactId: number, texto: string): void {
+    if (!texto.trim()) return;
+
+    const nuevoMensaje: ChatMessage = {
+      id: ++this.nextMessageId,
+      contactId,
+      texto,
+      hora: this.obtenerHoraActual(),
+      enviadoPorMi: true,
+    };
+
+    this.mensajes.update(lista => [...lista, nuevoMensaje]);
+  }
+
+  private obtenerHoraActual(): string {
+    return new Date().toLocaleTimeString('es-MX', {
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  }
 }

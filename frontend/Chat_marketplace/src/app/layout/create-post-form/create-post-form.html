@@ -1,0 +1,143 @@
+<section class="contenedor">
+    <label class="subir-imagen">
+        <input
+        type="file"
+        hidden
+        accept="image/*"
+        (change)="seleccionarImagen($event)"
+        >
+
+        <div class="contenido-imagen">
+        <p>Sube una imagen</p>
+        <span class="material-symbols-outlined">image</span>
+        </div>
+    </label>
+
+    <label>Nombre del producto:</label>
+    <input
+        type="text"
+        [value]="nombre()"
+        (input)="nombre.set($any($event.target).value)"
+    >
+
+    <label>Descripción:</label>
+    <textarea
+        [value]="descripcion()"
+        (input)="descripcion.set($any($event.target).value)"
+    ></textarea>
+</section>
+
+<section class="archivo">
+    <label>Opcional:</label>
+
+    <label class="subir-archivo">
+        <input
+        type="file"
+        hidden
+        (change)="seleccionarArchivo($event)"
+        >
+
+        <span class="material-symbols-outlined">upload_file</span>
+        Sube un archivo
+    </label>
+</section>
+
+<section class="datos-producto">
+    <div class="fila">
+        <label>Precio:</label>
+        <input
+        type="number"
+        placeholder="$ Ingresa el precio"
+        [value]="precio()"
+        (input)="precio.set(+$any($event.target).value)"
+        >
+    </div>
+
+    <div class="fila">
+        <label>Unidades:</label>
+        <input
+        type="number"
+        placeholder="Unidades disponibles"
+        [value]="unidades()"
+        (input)="unidades.set(+$any($event.target).value)"
+        >
+    </div>
+</section>
+
+<section class="card">
+    <h3>Horario en el que estás disponible:</h3>
+
+    <div class="campo">
+        <label>Hora:</label>
+        <input
+        type="text"
+        placeholder="8:00 a.m. - 2:30 p.m."
+        [value]="horaDisponible()"
+        (input)="horaDisponible.set($any($event.target).value)"
+        >
+    </div>
+
+    <div class="campo-columna">
+        <label>Punto de entrega:</label>
+        <input
+        type="text"
+        placeholder="Aula A-24"
+        [value]="puntoEntrega()"
+        (input)="puntoEntrega.set($any($event.target).value)"
+        >
+    </div>
+</section>
+
+<section class="card">
+    <h3>Datos adicionales opcionales:</h3>
+
+    <div class="telefono">
+        <label>Teléfono:</label>
+        <input
+        type="tel"
+        placeholder="971 123 456"
+        [value]="telefono()"
+        (input)="telefono.set($any($event.target).value)"
+        >
+    </div>
+
+    <h3>Redes sociales</h3>
+
+    <div class="red-social">
+        <img src="assets/social-media/instagram.png" alt="Instagram">
+        <input
+        type="text"
+        placeholder="@anyma"
+        [value]="instagram()"
+        (input)="instagram.set($any($event.target).value)"
+        >
+    </div>
+
+    <div class="red-social">
+        <img src="assets/social-media/facebook.png" alt="Facebook">
+        <input
+        type="text"
+        placeholder="Anyma"
+        [value]="facebook()"
+        (input)="facebook.set($any($event.target).value)"
+        >
+    </div>
+
+    <div class="red-social">
+        <img src="assets/social-media/tiktok.png" alt="TikTok">
+        <input
+        type="text"
+        placeholder="@anyma.official"
+        [value]="tiktok()"
+        (input)="tiktok.set($any($event.target).value)"
+        >
+    </div>
+</section>
+
+<button
+    class="btn-publicar"
+    type="button"
+    (click)="crearPublicacion()"
+    >
+    Crear publicación
+</button>

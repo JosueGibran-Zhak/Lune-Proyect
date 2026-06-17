@@ -13,5 +13,4 @@ import { ProductResume } from '../../models/product-resume';
 })
 export class ProductCard {
   publicacion = input.required<ProductResume>();
-
 }

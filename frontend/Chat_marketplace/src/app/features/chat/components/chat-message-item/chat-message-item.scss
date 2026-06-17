@@ -1,0 +1,41 @@
+:host {
+    display: block;
+}
+
+.message-row {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.message-row.mine {
+    justify-content: flex-end;
+}
+
+.message-bubble {
+    max-width: 75%;
+    padding: 9px 12px;
+    border-radius: 8px;
+    background: #4b5a86;
+    color: white;
+    font-size: 13px;
+    line-height: 1.25;
+    position: relative;
+
+    p {
+        margin: 0;
+        padding-right: 35px;
+    }
+
+    span {
+        display: block;
+        text-align: right;
+        font-size: 9px;
+        opacity: 0.8;
+        margin-top: 3px;
+    }
+}
+
+.message-row.mine .message-bubble {
+    background: #dce3ff;
+    color: #111827;
+}   

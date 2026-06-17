@@ -31,6 +31,12 @@ export const routes: Routes = [
         component: MarketplacePage
     },
     {
+        path: 'create-post',
+        loadComponent:() =>
+            import('./features/marketplace/pages/create-post/create-post')
+        .then(m => m.CreatePost)
+    },
+    {
         path: '',
         redirectTo: 'auth-page',
         pathMatch: 'full'

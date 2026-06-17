@@ -1,0 +1,276 @@
+:host {
+    display: block;
+    font-family: sans-serif;
+
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    padding: 16px 0 24px;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(91, 110, 245, 0.3);
+        border-radius: 4px;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.contenedor {
+    width: 90%;
+    max-width: 700px;
+    margin: auto;
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.subir-imagen {
+    display: block;
+    width: 100%;
+    height: 300px;
+    background: #dbe2f6;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.contenido-imagen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    p {
+        font-size: 22px;
+    }
+
+    span {
+        font-size: 45px;
+    }
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 22px;
+}
+
+input[type='text'],
+input[type='tel'] {
+    width: 100%;
+    height: 50px;
+    background: #dbe2f6;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 18px;
+
+    &:focus {
+        outline: none;
+        border: 2px solid #6a87ff;
+    }
+}
+
+textarea {
+    width: 100%;
+    height: 160px;
+    background: #dbe2f6;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    resize: none;
+    font-size: 18px;
+
+    &:focus {
+        outline: none;
+        border: 2px solid #6a87ff;
+    }
+}
+
+.archivo {
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto;
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.subir-archivo {
+    width: 100%;
+    padding: 20px;
+    background: #e7e0ff;
+    border: 1px solid #c8bdf8;
+    border-radius: 5px;
+    text-align: center;
+    color: #7b7cff;
+    cursor: pointer;
+
+    span {
+        margin-right: 5px;
+        vertical-align: middle;
+    }
+}
+
+.datos-producto {
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+.fila {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+
+    label {
+        width: fit-content;
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        font-size: 20px;
+    }
+
+    input {
+        width: 100px;
+        flex: 1;
+        padding: 15px;
+        border: none;
+        border-radius: 5px;
+        background: #f5f5f5;
+        font-size: 20px;
+        color: #000;
+
+        &::placeholder {
+        color: #9aa7ff;
+        }
+
+        &:focus {
+        outline: none;
+        border: 2px solid #6c84ff;
+        }
+    }
+}
+
+.card {
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f5f5f5;
+    border-radius: 8px;
+
+    h3 {
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 22px;
+        font-weight: normal;
+    }
+
+    input {
+        padding: 15px;
+        border: none;
+        border-radius: 5px;
+        background: #dbe2f6;
+        font-size: 18px;
+
+        &::placeholder {
+        color: #9aa7ff;
+        }
+
+        &:focus {
+        outline: none;
+        border: 2px solid #6d85ff;
+        }
+    }
+}
+
+.campo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+
+    label {
+        min-width: 50px;
+        font-size: 20px;
+    }
+
+    input {
+        flex: 1;
+    }
+}
+
+.campo-columna {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        font-size: 20px;
+    }
+
+    input {
+        width: 100%;
+    }
+}
+
+.telefono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+
+    input {
+        margin-left: 10px;
+    }
+}
+
+.red-social {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+
+    img {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+    }
+
+    input {
+        flex: 1;
+    }
+}
+
+.btn-publicar {
+    display: block;
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 18px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #f400ff, #8a5cff);
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+        transform: scale(1.02);
+    }
+}
