@@ -76,9 +76,7 @@ export class ChatService {
 
     this.usuariosDisponibles.update(usuarios =>
       usuarios.map(u =>
-        u.id === usuario.id
-          ? { ...u, agregado: true }
-          : u
+        u.id === usuario.id ? { ...u, agregado: true } : u
       )
     );
   }
