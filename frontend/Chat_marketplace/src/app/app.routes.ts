@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { MarketplacePage } from './features/marketplace/pages/marketplace-page/marketplace-page';
-
+import { ProfilePage } from './features/perfil/pages/profile-page/profile-page';
 export const routes: Routes = [
     {
         path: 'auth-page',
@@ -25,6 +25,12 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./features/chat/pages/add-contact-page/add-contact-page')
             .then(m => m.AddContactPage)
+    },
+    {
+        path: 'profile',
+        loadComponent: () =>
+            import('./features/perfil/pages/profile-page/profile-page')
+        .then(m => m.ProfilePage)
     },
     {
         path: 'marketplace',

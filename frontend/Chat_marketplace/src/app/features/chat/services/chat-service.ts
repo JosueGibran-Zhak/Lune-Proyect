@@ -32,6 +32,11 @@ export class ChatService {
     { id: 20, usuario: 'Abigail Navarro F.', agregado: false },
     { id: 21, usuario: 'Kenia Martínez', agregado: false },
     { id: 22, usuario: 'Genesis López', agregado: false },
+    { id: 23, usuario: 'Noe Rodriguez', agregado: false },
+    { id: 24, usuario: 'Xcaret Cristal', agregado: false },
+    { id: 25, usuario: 'Jose Arellanes', agregado: false },
+    { id: 26, usuario: 'Selina del Mar', agregado: false },
+    { id: 27, usuario: 'Angel Licea', agregado: false },
   ]);
 
   private mensajes = signal<ChatMessage[]>([

@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { PostService } from '../../features/marketplace/services/post-service';
 import { PostModelRequest } from '../../features/marketplace/models/post-model';
-
 @Component({
   selector: 'app-create-post-form',
   standalone: true,

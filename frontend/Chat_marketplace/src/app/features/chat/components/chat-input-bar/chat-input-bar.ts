@@ -13,7 +13,7 @@ import { Component, output, signal } from '@angular/core';
 
         <input
           type="text"
-          placeholder="Habia una vez un pollito azul..."
+          placeholder="Escribe un mensaje"
           [value]="mensaje()"
           (input)="mensaje.set($any($event.target).value)"
           (keydown.enter)="enviar()"

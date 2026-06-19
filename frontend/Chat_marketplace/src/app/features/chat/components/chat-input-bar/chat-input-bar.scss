@@ -37,8 +37,9 @@ input {
     }
 
     &::placeholder {
-        color: #050505;
-        opacity: 1;
+        color: #000000;
+        opacity: 0.5;
+        font-size: 12px;
     }
 }
 
