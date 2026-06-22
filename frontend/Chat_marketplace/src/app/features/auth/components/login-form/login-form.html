@@ -2,17 +2,25 @@
     <h2>Inicio de sesión</h2>
     <div class="input-container">
                 <img src="assets/auth-icons/User.png" alt="Usuario">
-        <input  required type="text"    
-                >
+        <input  
+            required 
+            type="text"    
+            [value]="userName()"
+            [ngModel]="userName()"
+            (ngModelChange)="userName.set($event)"
+        >
         <span>Usuario</span>
     </div>
 
     <div class="input-container">
                 <img src="assets/auth-icons/Lock.png" alt="Usuario">
-        <input required 
+        <input 
+            required 
             type="password"
-            
-                >
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+            (keyup.enter)="iniciarSesion()"
+        >
         <span>Contraseña</span>
     </div>
     <app-main-button (clickeado)="iniciarSesion()"

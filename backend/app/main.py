@@ -3,8 +3,6 @@ main.py
 
 Archivo principal del backend FastAPI.
 
-Aquí se crea la aplicación, se configura CORS, se registran
-las rutas REST y se habilita el endpoint WebSocket del chat.
 """
 
 from fastapi import FastAPI
@@ -30,8 +28,9 @@ http://127.0.0.1:8000
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:4200",
-        "http://127.0.0.1:4200"
+        "*"
+        #"http://localhost:4200",
+        #"http://127.0.0.1:4200"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -54,9 +53,6 @@ app.include_router(auth_router)
 
 @app.get("/")
 def inicio():
-    """
-    Ruta básica para comprobar que el backend está activo.
-    """
     return {
         "mensaje": "Backend del chat funcionando correctamente"
     }

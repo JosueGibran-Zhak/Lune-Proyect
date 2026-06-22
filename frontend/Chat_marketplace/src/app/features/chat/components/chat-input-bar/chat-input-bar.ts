@@ -47,4 +47,4 @@ export class ChatInputBar {
     this.mensajeEnviado.emit(texto);
     this.mensaje.set('');
   }
-}
+}   

@@ -1,13 +1,22 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 class PeticionLogin(BaseModel):
     userName: str
     password: str
 
-class Usuario(BaseModel):
-    id: str
-    userName:str
+class PeticionRegister(BaseModel):
+    correo: EmailStr
+    userName: str
+    password: str
+    confirmPassword: str
 
-class RespuestaLogin(BaseModel):
+
+
+class UsuarioSesion(BaseModel):
+    id: int
+    userName:str
+    correo: str
+
+class RespuestaAuth(BaseModel):
     token:str
-    usuario: Usuario
+    usuario: UsuarioSesion

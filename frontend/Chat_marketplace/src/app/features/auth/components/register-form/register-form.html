@@ -5,7 +5,9 @@
         <input  
             required 
             type="email" 
-            placeholder=" "  
+            placeholder=" " 
+            [ngModel]="correo()"
+            (ngModelChange)="correo.set($event)" 
                 >
         <span>Correo</span>
     </div>
@@ -14,7 +16,9 @@
         <input  
             required 
             type="text" 
-            placeholder=" "   
+            placeholder=" " 
+            [ngModel]="userName()"
+            (ngModelChange)="userName.set($event)"  
                 >
         <span>Usuario</span>
     </div>
@@ -25,7 +29,8 @@
             required 
             type="password" 
             placeholder=" "
-            
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
                 >
         <span>Contraseña</span>
     </div>
@@ -35,9 +40,11 @@
             required 
             type="password"
             placeholder=" "
+            [ngModel]="confirmPassword()"
+            (ngModelChange)="confirmPassword.set($event)"
                 >
         <span>Confirmar contraseña</span>
     </div>
-    <app-main-button texto="Crear usuario"></app-main-button>
+    <app-main-button texto="Crear usuario" (clickeado)="registrarse()"></app-main-button>
     <p>¿Tienes una cuenta? <a (click)="authService.mostrarLogin()"> Inicia sesión</a> </p>
 </div>

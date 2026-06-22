@@ -5,29 +5,20 @@ Rutas REST relacionadas con autenticación.
 """
 
 from fastapi import APIRouter
-from app.models.auth_model import PeticionLogin, RespuestaLogin
-from app.controllers.auth_controller import login_usuario
+from app.models.auth_model import PeticionLogin,PeticionRegister, RespuestaAuth
+from app.controllers.auth_controller import registrar_Controller, login_Controller
 
 
 router = APIRouter(
-    prefix="/api",
+    prefix="/api/auth",
     tags=["Autenticación"]
 )
 
 
-@router.post("/auth-page", response_model=RespuestaLogin)
+@router.post("/login", response_model=RespuestaAuth)
 def login(credenciales: PeticionLogin):
-    """
-    Endpoint usado por Angular para iniciar sesión.
+    return login_Controller(credenciales)
 
-    URL:
-    POST http://127.0.0.1:8000/api/auth_rutas
-
-    Body:
-    {
-        "username": "alumno",
-        "password": "1234"
-    }
-    """
-    
-    return login_usuario(credenciales)
+@router.post("/register", response_model= RespuestaAuth)
+def register(datos: PeticionRegister):
+    return registrar_Controller(datos)

@@ -4,7 +4,14 @@ export interface PeticionLogin{
     userName: string;
     password: string;
 }
-export interface RespuestaLogin {
+
+export interface PeticionRegistro{
+    correo: string;
+    userName: string;
+    password: string;
+    confirmPassword: string;
+}
+export interface RespuestaAuth{
     token: string;
     usuario: Usuario;
 }

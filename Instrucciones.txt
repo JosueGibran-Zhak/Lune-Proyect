@@ -54,6 +54,10 @@ Desde la carpeta backend, con el entorno activado:
 Si no funciona mejor usar:
 python -m uvicorn main:app --reload
 
+Para permitir exponer la IP a los celulares:
+
+ng serve --host 0.0.0.0 --allowed-hosts --proxy-config proxy.conf.json
+
 -------------------------------------------
 5. URLS IMPORTANTES
 -------------------------------------------
