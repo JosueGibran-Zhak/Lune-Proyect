@@ -19,12 +19,6 @@ export class PostService {
       unidades: post.unidades,
       horaDisponible: post.horaDisponible,
       puntoEntrega: post.puntoEntrega,
-      telefono: post.telefono,
-      instagram: post.instagram,
-      facebook: post.facebook,
-      tiktok: post.tiktok,
-      imagen: post.imagen,
-      archivo: post.archivo,
     };
 
     this.posts.update(lista => [...lista, nuevaPublicacion]);

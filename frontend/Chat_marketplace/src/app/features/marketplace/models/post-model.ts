@@ -5,12 +5,6 @@ export interface PostModelRequest {
     unidades: number;
     horaDisponible: string;
     puntoEntrega: string;
-    telefono?: string;
-    instagram?: string;
-    facebook?: string;
-    tiktok?: string;
-    imagen?: File | null;
-    archivo?: File | null;
 }
 
 export interface PostModelResponse {
@@ -21,10 +15,6 @@ export interface PostModelResponse {
     unidades: number;
     horaDisponible: string;
     puntoEntrega: string;
-    telefono?: string;
-    instagram?: string;
-    facebook?: string;
-    tiktok?: string;
     imagen?: File | null;
     archivo?: File | null;
 }

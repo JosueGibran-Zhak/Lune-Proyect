@@ -34,3 +34,162 @@
         margin-right: 8px;
     }
 }
+
+.card {
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f5f5f5;
+    border-radius: 8px;
+
+    h3 {
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 22px;
+        font-weight: normal;
+    }
+
+    input {
+        padding: 15px;
+        border: none;
+        border-radius: 5px;
+        background: #dbe2f6;
+        font-size: 18px;
+
+        &::placeholder {
+        color: #9aa7ff;
+        }
+
+        &:focus {
+        outline: none;
+        border: 2px solid #6d85ff;
+        }
+    }
+}
+
+.campo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+
+    label {
+        min-width: 50px;
+        font-size: 20px;
+    }
+
+    input {
+        flex: 1;
+    }
+}
+
+.campo-columna {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        font-size: 20px;
+    }
+
+    input {
+        width: 100%;
+    }
+}
+
+.telefono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+
+    input {
+        margin-left: 10px;
+    }
+}
+
+.red-social {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+
+    img {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+    }
+
+    input {
+        flex: 1;
+    }
+}
+
+.error {
+    color: #c0392b;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+.exito {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+button:disabled {
+    opacity: 0.6;
+}
+
+.btn-guardar {
+    display: block;
+    width: 90%;
+    max-width: 700px;
+    margin: 24px auto 10px;
+    padding: 18px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #f400ff, #8a5cff);
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+        transform: scale(1.02);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+}
+
+.logout-card {
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto 35px;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-cerrar-sesion {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #8a5cff;
+    border-radius: 6px;
+    background: white;
+    color: #8a5cff;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+        background: #f5edff;
+        transform: scale(1.02);
+    }
+}

@@ -9,6 +9,6 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
 }

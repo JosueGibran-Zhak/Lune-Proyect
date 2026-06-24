@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes.auth_rutas import router as auth_router
+from app.routes.perfil_routes import router as perfil_router
 
 app = FastAPI(
     title="API Lune",
@@ -48,6 +49,7 @@ chat_router:
 - WebSocket /ws/chat
 """
 app.include_router(auth_router)
+app.include_router(perfil_router)
 #app.include_router(chat_router)
 
 

@@ -13,7 +13,7 @@ class PeticionRegister(BaseModel):
 
 
 class UsuarioSesion(BaseModel):
-    id: int
+    id: str
     userName:str
     correo: str
 

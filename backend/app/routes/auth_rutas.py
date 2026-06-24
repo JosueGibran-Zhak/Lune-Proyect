@@ -10,7 +10,7 @@ from app.controllers.auth_controller import registrar_Controller, login_Controll
 
 
 router = APIRouter(
-    prefix="/api/auth",
+    prefix="/auth",
     tags=["Autenticación"]
 )
 

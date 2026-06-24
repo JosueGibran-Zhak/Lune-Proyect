@@ -55,12 +55,6 @@ export class CreatePostForm {
       unidades: this.unidades(),
       horaDisponible: this.horaDisponible(),
       puntoEntrega: this.puntoEntrega(),
-      telefono: this.telefono(),
-      instagram: this.instagram(),
-      facebook: this.facebook(),
-      tiktok: this.tiktok(),
-      imagen: this.imagen(),
-      archivo: this.archivo(),
     };
 
     this.postService.crearPublicacion(publicacion);

@@ -86,52 +86,6 @@
     </div>
 </section>
 
-<section class="card">
-    <h3>Datos adicionales opcionales:</h3>
-
-    <div class="telefono">
-        <label>Teléfono:</label>
-        <input
-        type="tel"
-        placeholder="971 123 456"
-        [value]="telefono()"
-        (input)="telefono.set($any($event.target).value)"
-        >
-    </div>
-
-    <h3>Redes sociales</h3>
-
-    <div class="red-social">
-        <img src="assets/social-media/instagram.png" alt="Instagram">
-        <input
-        type="text"
-        placeholder="@anyma"
-        [value]="instagram()"
-        (input)="instagram.set($any($event.target).value)"
-        >
-    </div>
-
-    <div class="red-social">
-        <img src="assets/social-media/facebook.png" alt="Facebook">
-        <input
-        type="text"
-        placeholder="Anyma"
-        [value]="facebook()"
-        (input)="facebook.set($any($event.target).value)"
-        >
-    </div>
-
-    <div class="red-social">
-        <img src="assets/social-media/tiktok.png" alt="TikTok">
-        <input
-        type="text"
-        placeholder="@anyma.official"
-        [value]="tiktok()"
-        (input)="tiktok.set($any($event.target).value)"
-        >
-    </div>
-</section>
-
 <button
     class="btn-publicar"
     type="button"
