@@ -34,6 +34,17 @@
         margin-top: 3px;
     }
 }
+.message-bubble.pending {
+    opacity: 0.7;
+    border: 1px dashed #ffffff;
+}
+
+.message-bubble small {
+    display: block;
+    font-size: 9px;
+    opacity: 0.8;
+    margin-top: 4px;
+}
 
 .message-row.mine .message-bubble {
     background: #dce3ff;

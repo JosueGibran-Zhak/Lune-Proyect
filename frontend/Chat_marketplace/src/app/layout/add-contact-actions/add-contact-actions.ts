@@ -11,11 +11,6 @@ import { BackButton } from '../../shared/components/back-button/back-button';
 
       <div class="top-actions">
         <app-back-button ruta="/chat-contacts" />
-
-        <button class="new-group-btn" type="button" (click)="crearGrupo.emit()">
-          <span class="icon-plus">+</span>
-          Nuevo grupo
-        </button>
       </div>
 
       <div class="search-box">
@@ -37,7 +32,6 @@ export class AddContactControls {
   busqueda = input<string>('');
 
   busquedaCambiada = output<string>();
-  crearGrupo = output<void>();
 
   onInput(evento: Event): void {
     const input = evento.target as HTMLInputElement;

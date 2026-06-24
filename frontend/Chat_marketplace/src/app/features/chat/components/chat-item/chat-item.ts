@@ -21,11 +21,11 @@ import { Component,input, output } from '@angular/core';
   styleUrl: './chat-item.scss',
 })
 export class ChatItem {
-  id          = input.required<number>();  
+  id          = input.required<string>();
   usuario     = input<string>('Usuario');
   noLeidos    = input<number>(0);
 
-  seleccionado = output<number>();
+  seleccionado = output<string>();
 
   seleccionarContacto(): void {
     this.seleccionado.emit(this.id());

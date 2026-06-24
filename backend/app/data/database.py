@@ -8,3 +8,5 @@ db = client["lune_db"]
 
 usuarios_collection = db["usuarios"]
 perfiles_collection = db["perfiles"]
+contactos_collection = db["contactos"]
+mensajes_collection = db["mensajes"]

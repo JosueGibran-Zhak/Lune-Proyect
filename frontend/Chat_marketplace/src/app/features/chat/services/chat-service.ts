@@ -1,112 +1,192 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
 import { ContactItem } from '../models/contact-item';
 import { UserSearchResult } from '../models/user-search-result';
 import { ChatMessage } from '../models/chat-message';
+import { LocalStorageService } from '../../../core/services/local-storage.service';
+import { WebSocketsService } from './web-sockets-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
+  private http = inject(HttpClient);
+  private localStorageService = inject(LocalStorageService);
+  private webSocketsService = inject(WebSocketsService);
+
+  private readonly contactosApiUrl = '/api/contactos';
+  private readonly mensajesApiUrl = '/api/mensajes';
+
   contactoSeleccionado = signal<ContactItem | null>(null);
-  private nextMessageId = 1;
 
-  //BORRAR DESPUES, Base de datos momentanea para comprobar
-  //como se ve en la vista
-  readonly contacts = signal<ContactItem[]>([
-    { id: 1,  usuario: 'Kenia',      noLeidos: 4 },
-    { id: 2,  usuario: 'Genesis',    noLeidos: 1 },
-    { id: 3,  usuario: 'Eduardo',    noLeidos: 0 },
-    { id: 4,  usuario: 'Josue',      noLeidos: 0 },
-    { id: 5,  usuario: 'Abigail',    noLeidos: 0 },
-    { id: 6,  usuario: 'Selina',     noLeidos: 0 },
-    { id: 7,  usuario: 'David',      noLeidos: 0 },
-    { id: 8,  usuario: 'Angel',      noLeidos: 0 },
-    { id: 9,  usuario: 'Xcaret',     noLeidos: 0 },
-    { id: 10, usuario: 'Fernanda',   noLeidos: 0 },
-    { id: 11, usuario: 'Ana Jazmin', noLeidos: 0 },
-    { id: 12, usuario: 'Adrian',     noLeidos: 0 },
-  ]);
+  private contactsSignal = signal<ContactItem[]>([]);
+  contacts = this.contactsSignal.asReadonly();
 
-  readonly usuariosDisponibles = signal<UserSearchResult[]>([
-    { id: 16, usuario: 'Abigail Navarro', agregado: true },
-    { id: 20, usuario: 'Abigail Navarro F.', agregado: false },
-    { id: 21, usuario: 'Kenia Martínez', agregado: false },
-    { id: 22, usuario: 'Genesis López', agregado: false },
-    { id: 23, usuario: 'Noe Rodriguez', agregado: false },
-    { id: 24, usuario: 'Xcaret Cristal', agregado: false },
-    { id: 25, usuario: 'Jose Arellanes', agregado: false },
-    { id: 26, usuario: 'Selina del Mar', agregado: false },
-    { id: 27, usuario: 'Angel Licea', agregado: false },
-  ]);
+  usuariosDisponibles = signal<UserSearchResult[]>([]);
 
-  private mensajes = signal<ChatMessage[]>([
-    {
-      id: 1,
-      contactId: 1,
-      texto: 'Qué es lo que estas probando?',
-      hora: '2:09 p.m.',
-      enviadoPorMi: false,
-    },
-    {
-      id: 2,
-      contactId: 1,
-      texto: 'Este es un texto de prueba para comprobar como se ve la letra.',
-      hora: '2:10 p.m.',
-      enviadoPorMi: true,
-    },
-    {
-      id: 3,
-      contactId: 1,
-      texto: 'No sé que es eso.',
-      hora: '2:13 p.m.',
-      enviadoPorMi: true,
-    },
-  ]);
+  cargandoContactos = signal(false);
+  cargandoBusqueda = signal(false);
 
-
-  agregarContacto(usuario: UserSearchResult): void {
-    const yaExiste = this.contacts().some(contacto => contacto.id === usuario.id);
-
-    if (yaExiste) return;
-
-    this.contacts.update(contactos => [
-      ...contactos,
-      {
-        id: usuario.id,
-        usuario: usuario.usuario,
-        noLeidos: 0,
-        avatarUrl: usuario.avatarUrl,
-      }
-    ]);
-
-    this.usuariosDisponibles.update(usuarios =>
-      usuarios.map(u =>
-        u.id === usuario.id ? { ...u, agregado: true } : u
-      )
-    );
-  }
-  
-
+  private mensajes = signal<ChatMessage[]>([]);
   mensajesChat = this.mensajes.asReadonly();
 
-  enviarMensaje(contactId: number, texto: string): void {
-    if (!texto.trim()) return;
+  cargarContactos(): void {
+    const usuario = this.localStorageService.obtenerSesion()?.usuario;
 
-    const nuevoMensaje: ChatMessage = {
-      id: ++this.nextMessageId,
-      contactId,
-      texto,
-      hora: this.obtenerHoraActual(),
-      enviadoPorMi: true,
-    };
+    if (!usuario) return;
 
-    this.mensajes.update(lista => [...lista, nuevoMensaje]);
+    this.cargandoContactos.set(true);
+
+    this.http.get<ContactItem[]>(`${this.contactosApiUrl}/${usuario.id}`)
+      .subscribe({
+        next: (contactos) => {
+          this.contactsSignal.set(contactos);
+          this.cargandoContactos.set(false);
+        },
+        error: (error) => {
+          console.log('Error cargando contactos:', error);
+          this.cargandoContactos.set(false);
+        }
+      });
   }
 
-  private obtenerHoraActual(): string {
-    return new Date().toLocaleTimeString('es-MX', {
-      hour: 'numeric',
-      minute: '2-digit',
+  buscarUsuarios(texto: string): void {
+    const usuario = this.localStorageService.obtenerSesion()?.usuario;
+
+    if (!usuario) return;
+
+    const busqueda = texto.trim();
+
+    if (!busqueda) {
+      this.usuariosDisponibles.set([]);
+      return;
+    }
+
+    this.http.get<UserSearchResult[]>(`${this.contactosApiUrl}/buscar/${usuario.id}/${busqueda}`)
+      .subscribe({
+        next: (usuarios) => {
+          this.usuariosDisponibles.set(usuarios);
+        },
+        error: (error) => {
+          console.log('Error buscando usuarios:', error);
+        }
+      });
+  }
+
+  agregarContacto(usuarioBuscado: UserSearchResult): void {
+    const usuario = this.localStorageService.obtenerSesion()?.usuario;
+
+    if (!usuario) return;
+
+    if (usuarioBuscado.agregado) return;
+
+    this.http.post<ContactItem>(`${this.contactosApiUrl}/${usuario.id}/${usuarioBuscado.id}`, {})
+      .subscribe({
+        next: (nuevoContacto) => {
+          this.contactsSignal.update(contactos => [...contactos, nuevoContacto]);
+
+          this.usuariosDisponibles.update(usuarios =>
+            usuarios.map(u =>
+              u.id === usuarioBuscado.id
+                ? { ...u, agregado: true }
+                : u
+            )
+          );
+        },
+        error: (error) => {
+          console.log('Error agregando contacto:', error);
+        }
+      });
+  }
+
+  seleccionarContacto(contacto: ContactItem): void {
+    this.contactoSeleccionado.set(contacto);
+  }
+
+  iniciarChatTiempoReal(): void {
+    const usuario = this.localStorageService.obtenerSesion()?.usuario;
+
+    if (!usuario) return;
+
+    this.webSocketsService.conectar(
+      usuario.id,
+      (mensaje) => this.agregarMensajeLocal(mensaje)
+    );
+  }
+
+  detenerChatTiempoReal(): void {
+    this.webSocketsService.desconectar();
+  }
+
+  cargarMensajesContacto(contactoId: string): void {
+    const usuario = this.localStorageService.obtenerSesion()?.usuario;
+
+    if (!usuario) return;
+
+    this.http.get<ChatMessage[]>(`${this.mensajesApiUrl}/${usuario.id}/${contactoId}`)
+      .subscribe({
+        next: (mensajes) => {
+          this.mensajes.set(mensajes);
+        },
+        error: (error) => {
+          console.log('Error cargando mensajes:', error);
+        }
+      });
+  }
+
+  enviarMensaje(contactoId: string, texto: string): void {
+    const usuario = this.localStorageService.obtenerSesion()?.usuario;
+
+    if (!usuario) return;
+
+    const contenido = texto.trim();
+
+    if (!contenido) return;
+
+    const nuevoMensaje: ChatMessage = {
+      id: crypto.randomUUID(),
+      emisorId: usuario.id,
+      receptorId: contactoId,
+      texto: contenido,
+      tipo: 'texto',
+      archivoUrl: '',
+      fecha: new Date().toISOString(),
+      estado: 'enviado'
+    };
+
+    this.agregarMensajeLocal(nuevoMensaje);
+
+    this.webSocketsService.enviarMensaje(nuevoMensaje);
+  }
+
+  private agregarMensajeLocal(mensaje: ChatMessage): void {
+    const existe = this.mensajes().some(item => item.id === mensaje.id);
+
+    if (existe) {
+      this.mensajes.update(lista =>
+        lista.map(item =>
+          item.id === mensaje.id
+            ? { ...item, ...mensaje }
+            : item
+        )
+      );
+
+      this.bajarScrollMensajes();
+      return;
+    }
+
+    this.mensajes.update(lista => [...lista, mensaje]);
+    this.bajarScrollMensajes();
+  }
+
+  private bajarScrollMensajes(): void {
+    setTimeout(() => {
+      const contenedor = document.getElementById('messages-list');
+
+      if (!contenedor) return;
+
+      contenedor.scrollTop = contenedor.scrollHeight;
     });
   }
 }

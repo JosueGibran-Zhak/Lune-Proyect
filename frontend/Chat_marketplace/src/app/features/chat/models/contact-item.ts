@@ -1,5 +1,6 @@
 export interface ContactItem {
-    id: number;
+    id: string;
+    contactoId: string;
     usuario: string;
     noLeidos: number;
     avatarUrl?: string;

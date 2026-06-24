@@ -1,6 +1,6 @@
 export interface UserSearchResult {
-    id: number,
-    usuario: string,
-    avatarUrl?: string,
-    agregado: boolean,
+    id: string;
+    usuario: string;
+    avatarUrl?: string;
+    agregado: boolean;
 }

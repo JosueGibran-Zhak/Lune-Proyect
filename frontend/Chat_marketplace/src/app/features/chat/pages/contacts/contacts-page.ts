@@ -1,8 +1,9 @@
-import { Component, inject} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { NavBar } from '../../../../layout/nav-bar/nav-bar';
 import { ChatContacts } from '../../../../layout/chat-contacts/chat-contacts';
 
 import { ChatService } from '../../services/chat-service';
+
 @Component({
   selector: 'app-contacts',
   standalone: true,
@@ -10,7 +11,12 @@ import { ChatService } from '../../services/chat-service';
   templateUrl: './contacts-page.html',
   styleUrl: './contacts-page.scss',
 })
-export class ContactsPage{
+export class ContactsPage implements OnInit {
   private chatService = inject(ChatService);
+
   contacts = this.chatService.contacts;
+
+  ngOnInit(): void {
+    this.chatService.cargarContactos();
+  }
 }

@@ -12,8 +12,7 @@ import { AddContactResults } from '../../../../layout/add-contact-results/add-co
     <div class="page add-contact-page">
       <app-add-contact-controls
         [busqueda]="busqueda()"
-        (busquedaCambiada)="busqueda.set($event)"
-        (crearGrupo)="crearGrupo()"
+        (busquedaCambiada)="buscarUsuarios($event)"
       />
 
       <app-add-contact-results
@@ -31,20 +30,22 @@ export class AddContactPage {
 
   usuariosEncontrados = computed(() => {
     const texto = this.busqueda().trim().toLowerCase();
+    const usuarios = this.chatService.usuariosDisponibles();
 
     if (!texto) return [];
 
-    return this.chatService.usuariosDisponibles().filter(usuario =>
+    return usuarios.filter(usuario =>
       usuario.usuario.toLowerCase().includes(texto) ||
-      usuario.id.toString().includes(texto)
+      usuario.id.toLowerCase().includes(texto)
     );
   });
 
-  agregarContacto(usuario: UserSearchResult): void {
-    this.chatService.agregarContacto(usuario);
+  buscarUsuarios(texto: string): void {
+    this.busqueda.set(texto);
+    this.chatService.buscarUsuarios(texto);
   }
 
-  crearGrupo(): void {
-    console.log('Crear grupo pendiente');
+  agregarContacto(usuario: UserSearchResult): void {
+    this.chatService.agregarContacto(usuario);
   }
 }

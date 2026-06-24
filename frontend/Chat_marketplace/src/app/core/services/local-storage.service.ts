@@ -12,6 +12,7 @@ import { ChatMessage } from '../../features/chat/models/chat-message';
 export class LocalStorageService {
   private readonly claveSesion = 'chat_sesion';
   private readonly claveMensajes = 'chat_mensajes';
+  private readonly claveMensajesPendientes = 'chat_mensajes_pendientes';
 
   private platformId = inject(PLATFORM_ID);
 
@@ -55,6 +56,29 @@ export class LocalStorageService {
     return JSON.parse(mensajes) as ChatMessage[];
   }
 
+  guardarPendientes(mensajes: ChatMessage[]): void {
+  if (!this.esNavegador()) return;
+
+  localStorage.setItem(this.claveMensajesPendientes, JSON.stringify(mensajes));
+}
+
+obtenerPendientes(): ChatMessage[] {
+  if (!this.esNavegador()) return [];
+
+  const mensajes = localStorage.getItem(this.claveMensajesPendientes);
+
+  if (!mensajes) {
+    return [];
+  }
+
+  return JSON.parse(mensajes) as ChatMessage[];
+}
+
+limpiarPendientes(): void {
+  if (!this.esNavegador()) return;
+
+  localStorage.removeItem(this.claveMensajesPendientes);
+}
 
   limpiarTodo(): void {
     if (!this.esNavegador()) return;

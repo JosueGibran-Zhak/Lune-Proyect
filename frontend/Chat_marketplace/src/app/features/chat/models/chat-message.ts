@@ -1,7 +1,13 @@
+export type EstadoMensaje = 'enviado' | 'pendiente';
+export type TipoMensaje = 'texto' | 'imagen' | 'archivo';
+
 export interface ChatMessage {
-    id: number;
-    contactId: number;
+    id: string;
+    emisorId: string;
+    receptorId: string;
     texto: string;
-    hora: string;
-    enviadoPorMi: boolean;
+    tipo: TipoMensaje;
+    archivoUrl?: string;
+    fecha: string;
+    estado: EstadoMensaje;
 }

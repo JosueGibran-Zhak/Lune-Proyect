@@ -3,51 +3,61 @@ import { ChatItem } from '../../features/chat/components/chat-item/chat-item';
 import { ActionsBar } from '../actions-bar/actions-bar';
 import { ContactItem } from '../../features/chat/models/contact-item';
 import { ChatService } from '../../features/chat/services/chat-service';
-
 import { Router } from '@angular/router';
 
-
-//Es la estructura para mostrar la lista de todos los contactos registrados
 @Component({
   selector: 'app-chat-contacts',
   standalone: true,
   imports: [ChatItem, ActionsBar],
   template: `
-  <div class="contacts-box">
-    <div class="contacts-list">
-      @for (contact of contacts(); track contact.id) {
-        <app-chat-item
-          [id]="contact.id"
-          [usuario]="contact.usuario"
-          [noLeidos]="contact.noLeidos"
-          (seleccionado)="irAChat(contact.id)"
-        />  
-      }
-    </div>
+    <div class="contacts-box">
+      @if (contacts().length > 0) {
+        <div class="contacts-list">
+          @for (contact of contacts(); track contact.id) {
+            <app-chat-item
+              [id]="contact.id"
+              [usuario]="contact.usuario"
+              [noLeidos]="contact.noLeidos"
+              (seleccionado)="irAChat(contact.id)"
+            />  
+          }
+        </div>
+      } @else {
+        <section class="empty-contacts">
+          <div class="empty-center">
+            <h1>¡Bienvenido!</h1>
+            <p>Agrega a alguien para empezar a chatear.</p>
+          </div>
 
-    <app-actions-bar
-      (clickeado)="irAgregarContacto()"
-    />
-  </div>
+          <div class="empty-hint">
+            <p>Agrega a tus amigos.</p>
+          </div>
+        </section>
+      }
+
+      <app-actions-bar
+        (clickeado)="irAgregarContacto()"
+      />
+    </div>
   `,
   styleUrl: './chat-contacts.scss',
 })
 export class ChatContacts {
-
   contacts = input<ContactItem[]>([]);
-  chatService = inject(ChatService);
 
+  private chatService = inject(ChatService);
   private router = inject(Router);
 
   irAgregarContacto(): void {
     this.router.navigate(['/add-contact']);
   }
-  irAChat(id: number): void {
+
+  irAChat(id: string): void {
     const contacto = this.contacts().find(c => c.id === id);
 
     if (!contacto) return;
 
-    this.chatService.contactoSeleccionado.set(contacto);
+    this.chatService.seleccionarContacto(contacto);
     this.router.navigate(['/chat-view']);
   }
 }
