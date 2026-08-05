@@ -54,6 +54,20 @@ export const routes: Routes = [
         .then(m => m.CreatePost)
     },
     {
+        path: 'favoritos',
+        canActivate: [authGuard],
+        loadComponent: ()=>
+            import('./features/marketplace/pages/favoritos-page/favoritos-page')
+        .then(m=>m.FavoritosPage)
+    },
+    {
+    path: 'product-detail/:id',
+    loadComponent: () =>
+        import('./features/marketplace/pages/product-detail-page/product-detail-page')
+        .then(m => m.ProductDetailPage),
+    canActivate: [authGuard]
+    },
+    {
         path: '',
         redirectTo: 'chat-contacts',
         pathMatch: 'full'

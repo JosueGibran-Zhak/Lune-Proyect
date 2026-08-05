@@ -1,0 +1,159 @@
+<main class="product-detail-page">
+        <app-product-detail-bar/>
+
+    @if (cargando()) {
+        <p class="cargando">Cargando producto...</p>
+    }
+
+    @if (producto()) {
+        <section class="contenedor">
+        <div class="subir-imagen imagen-detalle">
+            <img
+            [src]="producto()!.imagenUrl"
+            [alt]="producto()!.nombre"
+            >
+        </div>
+
+        <div class="titulo-producto">
+            <h2>{{ producto()!.nombre }}</h2>
+            <mat-icon class="like-icon">
+            {{ producto()!.likeado ? 'favorite' : 'favorite' }}
+            </mat-icon>
+        </div>
+
+        <p class="descripcion">
+            {{ producto()!.descripcion }}
+        </p>
+        </section>
+
+        <section class="datos-producto">
+        <div class="fila">
+            <label>Precio:</label>
+            <input
+            type="text"
+            [value]="'$' + producto()!.precio"
+            readonly
+            >
+        </div>
+
+        <div class="fila">
+            <label>Disponible:</label>
+            <input
+            type="text"
+            [value]="producto()!.unidades + ' unidades'"
+            readonly
+            >
+        </div>
+        </section>
+
+        <section class="card">
+        <div class="campo-columna">
+            <label>Vendedor:</label>
+            <input
+            type="text"
+            [value]="producto()!.vendedor.userName"
+            readonly
+            >
+        </div>
+
+        <div class="campo-columna">
+            <label>Correo:</label>
+            <input
+            type="text"
+            [value]="producto()!.vendedor.correo"
+            readonly
+            >
+        </div>
+
+        <button
+            class="btn-mensaje"
+            type="button"
+            (click)="enviarMensaje()"
+        >
+            <mat-icon>chat_bubble_outline</mat-icon>
+            Enviar mensaje
+        </button>
+        </section>
+
+        <section class="card">
+        <h3>Disponibilidad del vendedor</h3>
+
+        <div class="campo">
+            <label>Hora:</label>
+            <input
+            type="text"
+            [value]="producto()!.horaDisponible"
+            readonly
+            >
+        </div>
+
+        <div class="campo-columna">
+            <label>Punto de entrega:</label>
+            <input
+            type="text"
+            [value]="producto()!.puntoEntrega"
+            readonly
+            >
+        </div>
+        </section>
+
+        <section class="card">
+        <h3>Haz tu pedido:</h3>
+
+        <div class="cantidad-box">
+            <button
+            type="button"
+            (click)="disminuirCantidad()"
+            [disabled]="cantidad() <= 1"
+            >
+            -
+            </button>
+
+            <span>{{ cantidad() }}</span>
+
+            <button
+            type="button"
+            (click)="aumentarCantidad()"
+            [disabled]="cantidad() >= producto()!.unidades"
+            >
+            +
+            </button>
+        </div>
+
+        <p class="total">
+            Total: ${{ total() }}
+        </p>
+
+        <button
+            class="btn-publicar"
+            type="button"
+            [disabled]="!disponible() || comprando()"
+            (click)="comprar()"
+        >
+            @if (comprando()) {
+            Comprando...
+            } @else {
+            Comprar
+            }
+        </button>
+
+        @if (mensaje()) {
+            <p class="mensaje">{{ mensaje() }}</p>
+        }
+        </section>
+
+        @if (producto()!.archivoUrl) {
+        <section class="archivo">
+            <label>Archivo adjunto:</label>
+
+            <a
+            class="subir-archivo"
+            [href]="producto()!.archivoUrl"
+            target="_blank"
+            >
+            Ver archivo
+            </a>
+        </section>
+        }
+    }
+</main>

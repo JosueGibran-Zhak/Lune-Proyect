@@ -1,22 +1,96 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ProductResume } from '../models/product-resume';
-
 
 @Injectable({
   providedIn: 'root',
 })
 export class MarketplaceService {
-  readonly publicaciones = signal<ProductResume[]>([
-    { id: 1, nombreProducto: 'Gomitas azucaradas', precio: 15,  imagenUrl: 'assets/productos/gomitas.png',    estado: 'disponible',               likeado: false, favorito: false },
-    { id: 2, nombreProducto: 'Pines',              precio: 50,  imagenUrl: 'assets/productos/pines.png',      estado: 'pocas', piezasRestantes: 5, likeado: false, favorito: false },
-    { id: 3, nombreProducto: 'Gloss',              precio: 250, imagenUrl: 'assets/productos/gloss.png',      estado: 'agotado',                  likeado: false, favorito: false },
-    { id: 4, nombreProducto: 'Nachos',             precio: 30,  imagenUrl: 'assets/productos/nachos.png',     estado: 'disponible',               likeado: false, favorito: false },
-    { id: 5, nombreProducto: 'Hot-dog',            precio: 20,  imagenUrl: 'assets/productos/hot-dog.png',     estado: 'pocas', piezasRestantes: 3, likeado: false, favorito: false },
-    { id: 6, nombreProducto: 'Gel antibacterial',  precio: 80,  imagenUrl: 'assets/productos/gel.png',        estado: 'disponible',               likeado: false, favorito: false },
-    { id: 7, nombreProducto: 'Pines',              precio: 50,  imagenUrl: 'assets/productos/pines.png',      estado: 'pocas', piezasRestantes: 5, likeado: false, favorito: false },
-    { id: 8, nombreProducto: 'Gloss',              precio: 250, imagenUrl: 'assets/productos/gloss.png',      estado: 'agotado',                  likeado: false, favorito: false },
-    { id: 9, nombreProducto: 'Nachos',             precio: 30,  imagenUrl: 'assets/productos/nachos.png',     estado: 'disponible',               likeado: false, favorito: false },
-    { id: 10, nombreProducto: 'Hot-dog',            precio: 20,  imagenUrl: 'assets/productos/hot-dog.png',     estado: 'pocas', piezasRestantes: 3, likeado: false, favorito: false },
-  ])
+  private http = inject(HttpClient);
 
+  private readonly apiUrl = '/api/productos';
+
+  private publicacionesSignal = signal<ProductResume[]>([]);
+  publicaciones = this.publicacionesSignal.asReadonly();
+
+  cargando = signal(false);
+
+  cargarPublicaciones(): void {
+    this.cargando.set(true);
+
+    this.http.get<ProductResume[]>(this.apiUrl)
+      .subscribe({
+        next: (productos) => {
+          this.publicacionesSignal.set(
+            productos.map(producto => this.normalizarImagen(producto))
+          );
+
+          this.cargando.set(false);
+        },
+        error: (error) => {
+          console.log('Error cargando productos:', error);
+          this.cargando.set(false);
+        }
+      });
+  }
+
+  alternarLike(productoId: string): void {
+    this.http.patch<ProductResume>(`${this.apiUrl}/${productoId}/like`, {})
+      .subscribe({
+        next: (productoActualizado) => {
+          this.actualizarProducto(productoActualizado);
+        },
+        error: (error) => {
+          console.log('Error actualizando like:', error);
+        }
+      });
+  }
+
+  alternarFavorito(productoId: string): void {
+    this.http.patch<ProductResume>(`${this.apiUrl}/${productoId}/favorito`, {})
+      .subscribe({
+        next: (productoActualizado) => {
+          this.actualizarProducto(productoActualizado);
+        },
+        error: (error) => {
+          console.log('Error actualizando favorito:', error);
+        }
+      });
+  }
+
+  agregarPublicacion(producto: ProductResume): void {
+    const productoNormalizado = this.normalizarImagen(producto);
+
+    this.publicacionesSignal.update(lista => [
+      productoNormalizado,
+      ...lista
+    ]);
+  }
+
+  private actualizarProducto(productoActualizado: ProductResume): void {
+    const productoNormalizado = this.normalizarImagen(productoActualizado);
+
+    this.publicacionesSignal.update(lista =>
+      lista.map(producto =>
+        producto.id === productoNormalizado.id
+          ? productoNormalizado
+          : producto
+      )
+    );
+  }
+
+  private normalizarImagen(producto: ProductResume): ProductResume {
+    return {
+      ...producto,
+      imagenUrl: this.obtenerUrlArchivo(producto.imagenUrl),
+    };
+  }
+
+  private obtenerUrlArchivo(url: string): string {
+    if (url.startsWith('/uploads')) {
+      return `http://${window.location.hostname}:8000${url}`;
+    }
+
+    return url;
+  }
 }

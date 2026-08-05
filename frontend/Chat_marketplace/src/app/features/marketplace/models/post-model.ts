@@ -5,16 +5,22 @@ export interface PostModelRequest {
     unidades: number;
     horaDisponible: string;
     puntoEntrega: string;
+    imagen: File;
+    archivo?: File | null;
 }
 
 export interface PostModelResponse {
-    id: number;
+    id: string;
+    usuarioId: string;
     nombre: string;
     descripcion: string;
     precio: number;
     unidades: number;
     horaDisponible: string;
     puntoEntrega: string;
-    imagen?: File | null;
-    archivo?: File | null;
+    imagenUrl: string;
+    archivoUrl?: string;
+    fechaCreacion: string;
+    likeado: boolean;
+    favorito: boolean;
 }

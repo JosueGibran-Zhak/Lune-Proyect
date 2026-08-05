@@ -274,3 +274,16 @@ textarea {
         transform: scale(1.02);
     }
 }
+.error {
+    color: #c0392b;
+    font-size: 13px;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.btn-publicar:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}

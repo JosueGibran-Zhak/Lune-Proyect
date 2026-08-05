@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { PostService } from '../../features/marketplace/services/post-service';
 import { PostModelRequest } from '../../features/marketplace/models/post-model';
+
 @Component({
   selector: 'app-create-post-form',
   standalone: true,
@@ -23,13 +24,29 @@ export class CreatePostForm {
   horaDisponible = signal('');
   puntoEntrega = signal('');
 
-  telefono = signal('');
-  instagram = signal('');
-  facebook = signal('');
-  tiktok = signal('');
-
   imagen = signal<File | null>(null);
   archivo = signal<File | null>(null);
+
+  intentoGuardar = signal(false);
+  guardando = signal(false);
+
+  nombreValido = computed(() => this.nombre().trim().length > 0);
+  descripcionValida = computed(() => this.descripcion().trim().length > 0);
+  precioValido = computed(() => this.precio() > 0);
+  unidadesValidas = computed(() => this.unidades() >= 0);
+  horaValida = computed(() => this.horaDisponible().trim().length > 0);
+  puntoValido = computed(() => this.puntoEntrega().trim().length > 0);
+  imagenValida = computed(() => this.imagen() !== null);
+
+  formularioValido = computed(() =>
+    this.nombreValido() &&
+    this.descripcionValida() &&
+    this.precioValido() &&
+    this.unidadesValidas() &&
+    this.horaValida() &&
+    this.puntoValido() &&
+    this.imagenValida()
+  );
 
   seleccionarImagen(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -48,17 +65,34 @@ export class CreatePostForm {
   }
 
   crearPublicacion(): void {
+    this.intentoGuardar.set(true);
+
+    if (!this.formularioValido()) {
+      return;
+    }
+
+    const imagenSeleccionada = this.imagen();
+
+    if (!imagenSeleccionada) {
+      return;
+    }
+
     const publicacion: PostModelRequest = {
-      nombre: this.nombre(),
-      descripcion: this.descripcion(),
+      nombre: this.nombre().trim(),
+      descripcion: this.descripcion().trim(),
       precio: this.precio(),
       unidades: this.unidades(),
-      horaDisponible: this.horaDisponible(),
-      puntoEntrega: this.puntoEntrega(),
+      horaDisponible: this.horaDisponible().trim(),
+      puntoEntrega: this.puntoEntrega().trim(),
+      imagen: imagenSeleccionada,
+      archivo: this.archivo(),
     };
 
-    this.postService.crearPublicacion(publicacion);
+    this.guardando.set(true);
 
-    this.router.navigate(['/marketplace']);
+    this.postService.crearPublicacion(publicacion, () => {
+      this.guardando.set(false);
+      this.router.navigate(['/marketplace']);
+    });
   }
 }

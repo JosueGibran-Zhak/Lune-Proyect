@@ -1,14 +1,12 @@
-//Tarjeta resumen de la publicacion
-
 export type DisponibilidadEstado = 'disponible' | 'pocas' | 'agotado';
 
 export interface ProductResume {
-    id: number;
+    id: string;
     nombreProducto: string;
     precio: number;
     imagenUrl: string;
     estado: DisponibilidadEstado;
-    piezasRestantes?: number;
+    piezasRestantes?: number | null;
     likeado: boolean;
     favorito: boolean;
 }

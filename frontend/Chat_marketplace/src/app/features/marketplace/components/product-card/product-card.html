@@ -1,6 +1,9 @@
-<div class="card">
+<div class="card" (click)="verDetalle()">
     <div class="card-imagen">
-        <img [src]="publicacion().imagenUrl" [alt]="publicacion().nombreProducto" />
+        <img
+        [src]="publicacion().imagenUrl"
+        [alt]="publicacion().nombreProducto"
+        />
     </div>
 
     <div class="card-info">
@@ -10,7 +13,8 @@
         </div>
 
         <div class="fila-secundaria" (click)="$event.stopPropagation()">
-        <span class="disponibilidad"
+        <span
+            class="disponibilidad"
             [class.disponible]="publicacion().estado === 'disponible'"
             [class.pocas]="publicacion().estado === 'pocas'"
             [class.agotado]="publicacion().estado === 'agotado'"
@@ -21,11 +25,26 @@
         </span>
 
         <div class="acciones">
-            <button mat-icon-button class="accion-btn">
-            <mat-icon>{{ publicacion().likeado ? 'thumb_up' : 'thumb_up_off_alt' }}</mat-icon>
+            <button
+            mat-icon-button
+            class="accion-btn"
+            type="button"
+            (click)="like.emit(publicacion().id); $event.stopPropagation()"
+            >
+            <mat-icon>
+                {{ publicacion().likeado ? 'thumb_up' : 'thumb_up_off_alt' }}
+            </mat-icon>
             </button>
-            <button mat-icon-button class="accion-btn">
-            <mat-icon>{{ publicacion().favorito ? 'favorite' : 'favorite_border' }}</mat-icon>
+
+            <button
+            mat-icon-button
+            class="accion-btn"
+            type="button"
+            (click)="favorito.emit(publicacion().id); $event.stopPropagation()"
+            >
+            <mat-icon>
+                {{ publicacion().favorito ? 'favorite' : 'favorite_border' }}
+            </mat-icon>
             </button>
         </div>
         </div>

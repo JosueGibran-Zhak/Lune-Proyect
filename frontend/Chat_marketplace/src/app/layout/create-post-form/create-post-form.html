@@ -8,9 +8,17 @@
         >
 
         <div class="contenido-imagen">
-        <p>Sube una imagen</p>
+        @if (imagen()) {
+            <p>{{ imagen()!.name }}</p>
+        } @else {
+            <p>Sube una imagen</p>
+        }
         </div>
     </label>
+
+    @if (intentoGuardar() && !imagenValida()) {
+        <small class="error">La imagen del producto es obligatoria.</small>
+    }
 
     <label>Nombre del producto:</label>
     <input
@@ -19,14 +27,22 @@
         (input)="nombre.set($any($event.target).value)"
     >
 
+    @if (intentoGuardar() && !nombreValido()) {
+        <small class="error">El nombre del producto es obligatorio.</small>
+    }
+
     <label>Descripción:</label>
     <textarea
         [value]="descripcion()"
         (input)="descripcion.set($any($event.target).value)"
     ></textarea>
-</section>
 
-<section class="archivo">
+    @if (intentoGuardar() && !descripcionValida()) {
+        <small class="error">La descripción es obligatoria.</small>
+    }
+    </section>
+
+    <section class="archivo">
     <label>Opcional:</label>
 
     <label class="subir-archivo">
@@ -36,11 +52,15 @@
         (change)="seleccionarArchivo($event)"
         >
 
+        @if (archivo()) {
+        {{ archivo()!.name }}
+        } @else {
         Sube un archivo
+        }
     </label>
-</section>
+    </section>
 
-<section class="datos-producto">
+    <section class="datos-producto">
     <div class="fila">
         <label>Precio:</label>
         <input
@@ -51,6 +71,10 @@
         >
     </div>
 
+    @if (intentoGuardar() && !precioValido()) {
+        <small class="error">El precio debe ser mayor a 0.</small>
+    }
+
     <div class="fila">
         <label>Unidades:</label>
         <input
@@ -60,9 +84,13 @@
         (input)="unidades.set(+$any($event.target).value)"
         >
     </div>
-</section>
 
-<section class="card">
+    @if (intentoGuardar() && !unidadesValidas()) {
+        <small class="error">Las unidades no pueden ser negativas.</small>
+    }
+    </section>
+
+    <section class="card">
     <h3>Horario en el que estás disponible:</h3>
 
     <div class="campo">
@@ -75,6 +103,10 @@
         >
     </div>
 
+    @if (intentoGuardar() && !horaValida()) {
+        <small class="error">La hora disponible es obligatoria.</small>
+    }
+
     <div class="campo-columna">
         <label>Punto de entrega:</label>
         <input
@@ -84,12 +116,21 @@
         (input)="puntoEntrega.set($any($event.target).value)"
         >
     </div>
-</section>
+
+    @if (intentoGuardar() && !puntoValido()) {
+        <small class="error">El punto de entrega es obligatorio.</small>
+    }
+    </section>
 
 <button
     class="btn-publicar"
     type="button"
+    [disabled]="!formularioValido() || guardando()"
     (click)="crearPublicacion()"
     >
-    Crear publicación
+    @if (guardando()) {
+        Publicando...
+    } @else {
+        Crear publicación
+    }
 </button>

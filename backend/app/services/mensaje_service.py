@@ -48,4 +48,6 @@ def guardar_mensaje(datos: MensajeCreateRequest):
     else:
         mensajes_collection.insert_one(mensaje)
 
-    return mensaje
+    # PyMongo añade '_id' (ObjectId) al diccionario 'mensaje'.
+    # Usamos convertir_mensaje o eliminamos '_id' para evitar el error de JSON.
+    return convertir_mensaje(mensaje)

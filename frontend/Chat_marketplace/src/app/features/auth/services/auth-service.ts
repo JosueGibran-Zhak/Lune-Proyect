@@ -5,6 +5,8 @@ import { Usuario } from '../models/usuario.model';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { Router } from '@angular/router';
 
+import { WebSocketsService } from '../../chat/services/web-sockets-service';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -13,6 +15,7 @@ export class AuthService {
   private servicioHttp = inject(HttpClient);
   private router = inject(Router);
   private localStorageService = inject(LocalStorageService);
+  private webSocketsService = inject(WebSocketsService);
 
   private readonly apiUrl = '/api/auth';
 
@@ -44,6 +47,11 @@ export class AuthService {
 
     if (sesionGuardada) {
       this.sesion.set(sesionGuardada);
+
+      this.webSocketsService.conectar(
+              sesionGuardada.usuario.id,
+            () => {}
+          );
     }
   }
 
@@ -52,10 +60,19 @@ export class AuthService {
     this.servicioHttp.post<RespuestaAuth>(`${this.apiUrl}/login`, credenciales)
       .subscribe({
         next: (respuesta) => {
+          // Guarda la sesión
           this.sesion.set(respuesta);
           this.localStorageService.guardarSesion(respuesta);
+
+          // Inicia el WebSocket del usuario
+          this.webSocketsService.conectar(
+            respuesta.usuario.id,
+            () => {}
+          );
+
+          // Redirige al usuario
           this.router.navigateByUrl('/chat-contacts');
-        },
+          },
         error: () => {
           alert('Usuario o contraseña incorrectos.');
         } 
@@ -69,6 +86,11 @@ export class AuthService {
           this.sesion.set(respuesta);
           this.localStorageService.guardarSesion(respuesta);
           this.router.navigateByUrl('/chat-contacts');
+
+          this.webSocketsService.conectar(
+            respuesta.usuario.id,
+            ()=>{}
+          )
       },
       error: () =>{
         alert('No se pudo registrar al usuario');
@@ -77,9 +99,14 @@ export class AuthService {
   }
 
   cerrarSesion(): void {
+    // Cierra el WebSocket
+    this.webSocketsService.desconectar();
 
+    // Borra la sesión
     this.sesion.set(null);
     this.localStorageService.cerrarSesion();
+
+    // Regresa al login
     this.router.navigateByUrl('/auth-page');
   }
 

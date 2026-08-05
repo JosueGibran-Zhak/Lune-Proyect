@@ -29,7 +29,7 @@ def guardar_mensaje(datos: MensajeCreateRequest):
 @router.websocket("/chat/{usuario_id}")
 async def websocket_chat(websocket: WebSocket, usuario_id: str):
     print("Intentando conectar websocket:", usuario_id)
-
+    
     await websocket_manager.conectar(usuario_id, websocket)
 
     print("WebSocket conectado:", usuario_id)
@@ -44,6 +44,11 @@ async def websocket_chat(websocket: WebSocket, usuario_id: str):
                 mensaje = MensajeCreateRequest(**mensaje_dict)
 
                 mensaje_guardado = guardar_mensaje_controller(mensaje)
+
+                print("Tipo:", type(mensaje_guardado))
+                print("Contenido:", mensaje_guardado)
+                for clave, valor in mensaje_guardado.items():
+                    print(clave, type(valor), valor)
 
                 await websocket_manager.enviar_a_chat(
                     mensaje_guardado["emisorId"],

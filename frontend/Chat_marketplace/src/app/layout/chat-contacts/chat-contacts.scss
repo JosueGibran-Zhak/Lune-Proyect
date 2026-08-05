@@ -31,3 +31,41 @@
         }
     }
 }
+.empty-contacts {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.empty-center {
+    text-align: center;
+    margin-bottom: 110px;
+
+    h1 {
+        margin: 0 0 10px;
+        font-size: 36px;
+        color: #6d85ff;
+        font-weight: 800;
+    }
+
+    p {
+        margin: 0;
+        font-size: 20px;
+        color: #111b4f;
+        line-height: 1.4;
+    }
+}
+
+.empty-hint {
+    position: absolute;
+    right: 72px;
+    bottom: 62px;
+    color: white;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 600;
+}
