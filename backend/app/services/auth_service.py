@@ -14,7 +14,7 @@ def convertir_usuario_sesion(usuario) -> UsuarioSesion:
 def login_usuario(credenciales: PeticionLogin) -> RespuestaAuth:
 
     usuario = usuarios_collection.find_one({
-        "userName": credenciales.userName,
+        "userName": credenciales.userName.strip(),
         "password": credenciales.password
     })
 
@@ -43,7 +43,7 @@ def registrar_usuario(datos: PeticionRegister) -> RespuestaAuth:
         )
 
     usuario_existente = usuarios_collection.find_one({
-        "userName": datos.userName
+        "userName": datos.userName.strip()
     })
 
     if usuario_existente:
@@ -53,7 +53,7 @@ def registrar_usuario(datos: PeticionRegister) -> RespuestaAuth:
         )
 
     correo_existente = usuarios_collection.find_one({
-        "correo": datos.correo
+        "correo": datos.correo.strip()
     })
 
     if correo_existente:
@@ -63,8 +63,8 @@ def registrar_usuario(datos: PeticionRegister) -> RespuestaAuth:
         )
 
     nuevo_usuario = {
-        "correo": datos.correo,
-        "userName": datos.userName,
+        "correo": datos.correo.strip(),
+        "userName": datos.userName.strip(),
         "password": datos.password
     }
 
