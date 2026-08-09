@@ -48,6 +48,11 @@ export class ChatContacts {
   private chatService = inject(ChatService);
   private router = inject(Router);
 
+  ngOnInit(): void {
+    // Al cargar la lista de contactos, nos aseguramos de que no haya ningún chat activo en memoria
+    this.chatService.limpiarContactoSeleccionado();
+  }
+
   irAgregarContacto(): void {
     this.router.navigate(['/add-contact']);
   }

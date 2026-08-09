@@ -12,7 +12,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 25px;
+    gap: 20px;
 
     background-color: rgba(217, 217, 217, 0.35);
     border-radius: 10px;
@@ -104,4 +104,9 @@ h2{
 }
 .card p a:hover{
     text-decoration-line:underline;
+}
+
+.error {
+    color: #ffd501;
+    font-size: 0.8rem;  
 }

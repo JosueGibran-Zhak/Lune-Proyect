@@ -45,6 +45,9 @@
                 >
         <span>Confirmar contraseña</span>
     </div>
+    @if(error()){
+        <small class="error">{{ error() }}</small>
+    }
     <app-main-button texto="Crear usuario" (clickeado)="registrarse()"></app-main-button>
     <p>¿Tienes una cuenta? <a (click)="authService.mostrarLogin()"> Inicia sesión</a> </p>
 </div>

@@ -16,6 +16,7 @@ export class RegisterForm {
   userName = signal('');
   password = signal('');
   confirmPassword = signal('');
+  error = this.authService.error;
 
   registrarse(): void{
     this.authService.register({

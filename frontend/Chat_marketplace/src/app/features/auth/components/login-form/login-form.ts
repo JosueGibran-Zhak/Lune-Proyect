@@ -15,6 +15,7 @@ export class LoginForm {
 
   userName = signal('');
   password = signal('');
+  error = this.authService.error;
 
   iniciarSesion(): void{
     this.authService.login({

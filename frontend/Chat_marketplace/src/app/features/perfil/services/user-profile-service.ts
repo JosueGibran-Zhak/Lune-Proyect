@@ -18,148 +18,149 @@ export class UserProfileService {
   private perfilSignal = signal<UserProfile | null>(null);
   perfil = this.perfilSignal.asReadonly();
 
+  // Signals para guardar el estado original (Copia del backend)
+  private telefonoInicial = signal('');
+  private instagramInicial = signal('');
+  private facebookInicial = signal('');
+  private tiktokInicial = signal('');
+
+  // Signals actuales del formulario
   telefono = signal('');
   instagram = signal('');
   facebook = signal('');
   tiktok = signal('');
 
-  errorTelefono = signal('');
-  errorInstagram = signal('');
-  errorFacebook = signal('');
-  errorTiktok = signal('');
+  // COMPUTEDS PARA ERRORES (Puros: no hacen .set() en otras signals)
+  errorTelefono = computed(() => {
+    const telefono = this.telefono().trim();
+    if (telefono.length === 0) return '';
+
+    // Define una expresión regular para validar números telefónicos.
+    // ^        -> Inicio del texto.
+    // [0-9 ]   -> Solo permite números del 0 al 9 y espacios en blanco.
+    // {7,15}   -> Exige un mínimo de 7 y un máximo de 15 caracteres.
+    // $        -> Fin del texto.
+    if( telefono.length > 10){
+      return 'El teléfono debe tener 10 dígitos o menos';
+    }
+    const regexTelefono = /^[0-9 ]{7,15}$/;
+    return regexTelefono.test(telefono) ? '' : 'El teléfono solo debe tener números y espacios.';
+  });
+
+  errorInstagram = computed(() => {
+    const instagram = this.instagram().trim();
+    if (instagram.length === 0) return '';
+    return instagram.startsWith('@') ? '' : 'Instagram debe iniciar con @.';
+  });
+
+  errorFacebook = computed(() => {
+    const facebook = this.facebook().trim();
+    return facebook.length <= 50 ? '' : 'Facebook no debe pasar de 50 caracteres.';
+  });
+
+  errorTiktok = computed(() => {
+    const tiktok = this.tiktok().trim();
+    if (tiktok.length === 0) return '';
+    return tiktok.startsWith('@') ? '' : 'TikTok debe iniciar con @.';
+  });
+
   mensajeExito = signal('');
   cargando = signal(false);
 
   usuarioActual = computed(() => this.authService.usuarioActual());
   perfilDisponible = computed(() => this.perfilSignal() !== null);
 
+  //Computed para comprobar si por lo menos un campo del fórmulario se modificó
+  formularioModificado = computed(() => {
+    return (
+      this.telefono().trim() != this.telefonoInicial().trim()   ||
+      this.instagram().trim() != this.instagramInicial().trim() ||
+      this.facebook().trim() != this.facebookInicial().trim()   ||
+      this.tiktok().trim() != this.tiktokInicial().trim()
+    );
+  });
+
+  formularioValido = computed(() => {
+    return (
+      this.errorTelefono() === '' &&
+      this.errorInstagram() === '' &&
+      this.errorFacebook() === '' &&
+      this.errorTiktok() === ''
+    );
+  });
+
+  //COMPUTED HABILITAR / DESHABILITAR guardar
+  //Verifica que se haya modificado un campo en el form y que sea valido.
+  puedoGuardar = computed(() => {
+    return this.formularioModificado() && this.formularioValido();
+  });
+
   cargarPerfil(): void {
-  const usuario = this.localStorageService.obtenerSesion()?.usuario;
+    this.mensajeExito.set('');
+    const usuario = this.localStorageService.obtenerSesion()?.usuario;
 
-  console.log('Usuario desde localStorage:', usuario);
+    console.log('Usuario desde localStorage:', usuario);
 
-  if (!usuario) {
-    return;
+    if (!usuario) {
+      return;
+    }
+
+    console.log('URL perfil:', `${this.apiUrl}/${usuario.id}`);
+
+    this.cargando.set(true);
+
+    this.http.get<UserProfile>(`${this.apiUrl}/${usuario.id}`)
+      .subscribe({
+        next: (perfil) => {
+          console.log('Perfil recibido:', perfil);
+
+          this.perfilSignal.set(perfil);
+
+          const tel = perfil.telefono ?? '';
+          const insta = perfil.instagram ?? '';
+          const fb = perfil.facebook ?? '';
+          const tk = perfil.tiktok ?? '';
+
+          //Guarda el valor inicial al cargar
+          this.telefonoInicial.set(tel);
+          this.instagramInicial.set(insta);
+          this.facebookInicial.set(fb);
+          this.tiktokInicial.set(tk);
+
+          //Guarda el valor actual 
+          this.telefono.set(tel);
+          this.instagram.set(insta);
+          this.facebook.set(fb);
+          this.tiktok.set(tk);
+
+          this.cargando.set(false);
+        },
+        error: (error) => {
+          console.log('Error cargando perfil:', error);
+          console.log('URL usada:', `${this.apiUrl}/${usuario.id}`);
+          this.cargando.set(false);
+        }
+      });
   }
 
-  console.log('URL perfil:', `${this.apiUrl}/${usuario.id}`);
-
-  this.cargando.set(true);
-
-  this.http.get<UserProfile>(`${this.apiUrl}/${usuario.id}`)
-    .subscribe({
-      next: (perfil) => {
-        console.log('Perfil recibido:', perfil);
-
-        this.perfilSignal.set(perfil);
-
-        this.telefono.set(perfil.telefono ?? '');
-        this.instagram.set(perfil.instagram ?? '');
-        this.facebook.set(perfil.facebook ?? '');
-        this.tiktok.set(perfil.tiktok ?? '');
-
-        this.cargando.set(false);
-      },
-      error: (error) => {
-        console.log('Error cargando perfil:', error);
-        console.log('URL usada:', `${this.apiUrl}/${usuario.id}`);
-        this.cargando.set(false);
-      }
-    });
-}
-
   actualizarTelefono(valor: string): void {
+    this.mensajeExito.set('');
     this.telefono.set(valor);
-    this.validarTelefono();
   }
 
   actualizarInstagram(valor: string): void {
+    this.mensajeExito.set('');
     this.instagram.set(valor);
-    this.validarInstagram();
   }
 
   actualizarFacebook(valor: string): void {
+    this.mensajeExito.set('');
     this.facebook.set(valor);
-    this.validarFacebook();
   }
 
   actualizarTiktok(valor: string): void {
+    this.mensajeExito.set('');
     this.tiktok.set(valor);
-    this.validarTiktok();
-  }
-
-  private validarTelefono(): boolean {
-    const telefono = this.telefono().trim();
-
-    if (telefono.length === 0) {
-      this.errorTelefono.set('');
-      return true;
-    }
-
-    const regexTelefono = /^[0-9 ]{7,15}$/;
-
-    if (!regexTelefono.test(telefono)) {
-      this.errorTelefono.set('El teléfono solo debe tener números y espacios.');
-      return false;
-    }
-
-    this.errorTelefono.set('');
-    return true;
-  }
-
-  private validarInstagram(): boolean {
-    const instagram = this.instagram().trim();
-
-    if (instagram.length === 0) {
-      this.errorInstagram.set('');
-      return true;
-    }
-
-    if (!instagram.startsWith('@')) {
-      this.errorInstagram.set('Instagram debe iniciar con @.');
-      return false;
-    }
-
-    this.errorInstagram.set('');
-    return true;
-  }
-
-  private validarFacebook(): boolean {
-    const facebook = this.facebook().trim();
-
-    if (facebook.length > 50) {
-      this.errorFacebook.set('Facebook no debe pasar de 50 caracteres.');
-      return false;
-    }
-
-    this.errorFacebook.set('');
-    return true;
-  }
-
-  private validarTiktok(): boolean {
-    const tiktok = this.tiktok().trim();
-
-    if (tiktok.length === 0) {
-      this.errorTiktok.set('');
-      return true;
-    }
-
-    if (!tiktok.startsWith('@')) {
-      this.errorTiktok.set('TikTok debe iniciar con @.');
-      return false;
-    }
-
-    this.errorTiktok.set('');
-    return true;
-  }
-
-  private formularioValido(): boolean {
-    const telefonoValido = this.validarTelefono();
-    const instagramValido = this.validarInstagram();
-    const facebookValido = this.validarFacebook();
-    const tiktokValido = this.validarTiktok();
-
-    return telefonoValido && instagramValido && facebookValido && tiktokValido;
   }
 
   guardarCambios(): void {
@@ -170,6 +171,11 @@ export class UserProfileService {
     }
 
     if (!this.formularioValido()) {
+      return;
+    }
+
+    //Verifica cambios y valida antes de guardar.
+    if (!this.puedoGuardar()) {
       return;
     }
 
@@ -188,10 +194,22 @@ export class UserProfileService {
         next: (perfilActualizado) => {
           this.perfilSignal.set(perfilActualizado);
 
-          this.telefono.set(perfilActualizado.telefono);
-          this.instagram.set(perfilActualizado.instagram);
-          this.facebook.set(perfilActualizado.facebook);
-          this.tiktok.set(perfilActualizado.tiktok);
+          const tel = perfilActualizado.telefono ?? '';
+          const insta = perfilActualizado.instagram ?? '';
+          const fb = perfilActualizado.facebook ?? '';
+          const tk = perfilActualizado.tiktok ?? '';
+
+          //Guarda el valor inicial al cargar
+          this.telefonoInicial.set(tel);
+          this.instagramInicial.set(insta);
+          this.facebookInicial.set(fb);
+          this.tiktokInicial.set(tk);
+
+          //Guarda el valor actual 
+          this.telefono.set(tel);
+          this.instagram.set(insta);
+          this.facebook.set(fb);
+          this.tiktok.set(tk);
 
           this.actualizarSesionLocal(perfilActualizado);
 

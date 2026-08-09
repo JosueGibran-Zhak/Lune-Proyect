@@ -23,6 +23,7 @@ export class AuthService {
   sesion = signal<RespuestaAuth | null >(
     this.localStorageService.obtenerSesion()
   );
+  error = signal('');
 
   usuarioActual = computed<Usuario | null>(() =>{
     return this.sesion()?.usuario ?? null;
@@ -36,9 +37,13 @@ export class AuthService {
   esRegistro = computed(() => this.modo() === 'registro');
 
   mostrarLogin(){
+    //Limpia el error al cambiar de pestaña
+    this.error.set('');
     this.modo.set('login');
   }
   mostrarRegistro(){
+    //Limpia el error al cambiar de pestaña
+    this.error.set('');
     this.modo.set('registro');
   }
 
@@ -57,6 +62,9 @@ export class AuthService {
 
   login(credenciales: PeticionLogin): void {
 
+    //Limpia el error antes de intentar entrar
+    this.error.set('');
+
     this.servicioHttp.post<RespuestaAuth>(`${this.apiUrl}/login`, credenciales)
       .subscribe({
         next: (respuesta) => {
@@ -74,12 +82,15 @@ export class AuthService {
           this.router.navigateByUrl('/chat-contacts');
           },
         error: () => {
-          alert('Usuario o contraseña incorrectos.');
+          this.error.set('Usuario o contraseña incorrectos');
         } 
       });
   }
 
   register(datos: PeticionRegistro): void {
+    //Limpia el error antes de intentar entrar
+    this.error.set('');
+
     this.servicioHttp.post<RespuestaAuth>(`${this.apiUrl}/register`, datos)
     .subscribe({
       next: (respuesta) =>{
@@ -93,7 +104,7 @@ export class AuthService {
           )
       },
       error: () =>{
-        alert('No se pudo registrar al usuario');
+        this.error.set('No se pudo registrar al usuario');
       }
     })
   }

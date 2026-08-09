@@ -23,6 +23,9 @@
         >
         <span>Contraseña</span>
     </div>
+    @if(error()){
+        <small class="error">{{ error()}}</small>
+    }
     <app-main-button (clickeado)="iniciarSesion()"
         texto="Iniciar sesión"/>
     <p>¿No tienes una cuenta? <a (click)="authService.mostrarRegistro()"> Registrate</a> </p>

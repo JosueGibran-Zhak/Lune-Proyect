@@ -87,15 +87,16 @@ import { AuthService } from '../../features/auth/services/auth-service';
         @if (errorTiktok()) {
           <small class="error">{{ errorTiktok() }}</small>
         }
-
-        <button
-          type="button"
-          class="btn-guardar"
-          (click)="guardarCambios()"
-          [disabled]="cargando()"
-        >
-          Guardar cambios
-        </button>
+        @if(puedoGuardar()){
+          <button
+            type="button"
+            class="btn-guardar"
+            [disabled]="cargando()"
+            (click)="guardarCambios()"
+          >
+            {{cargando() ? 'Guardando': 'Guardar Cambios'}}
+          </button>
+        }
 
         @if (mensajeExito()) {
           <p class="exito">{{ mensajeExito() }}</p>
@@ -135,6 +136,9 @@ export class ProfileContent implements OnInit {
 
   mensajeExito = this.userProfileService.mensajeExito;
   cargando = this.userProfileService.cargando;
+  
+  // Referencia directa a la signal
+  puedoGuardar = this.userProfileService.puedoGuardar;
 
   ngOnInit(): void {
     this.userProfileService.cargarPerfil();
@@ -161,6 +165,6 @@ export class ProfileContent implements OnInit {
   }
 
   cerrarSesion(): void {
-  this.authService.cerrarSesion();
-}
+    this.authService.cerrarSesion();
+  }
 }

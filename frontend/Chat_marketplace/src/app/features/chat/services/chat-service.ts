@@ -6,6 +6,7 @@ import { UserSearchResult } from '../models/user-search-result';
 import { ChatMessage } from '../models/chat-message';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { WebSocketsService } from './web-sockets-service';
+import { ListKeyManager } from '@angular/cdk/a11y';
 
 /**
  * Servicio centralizado para la gestión del chat real-time, contactos y mensajes.
@@ -168,8 +169,19 @@ export class ChatService {
   seleccionarContacto(contacto: ContactItem): void {
     this.contactoSeleccionado.set(contacto);
     
-    // Mapeo seguro según la propiedad del modelo
+    // Reiniciar contador de no leídos para este contacto localmente
     const idDestino = contacto.contactoId || (contacto as any).id;
+    
+    this.contactsSignal.update(contactos =>
+      contactos.map(c => {
+        const id = c.contactoId || c.id;
+        if (id === idDestino) {
+          return { ...c, noLeidos: 0 };
+        }
+        return c;
+      })
+    );
+
     if (idDestino) {
       this.cargarMensajesContacto(idDestino);
     }
@@ -236,25 +248,64 @@ export class ChatService {
    * @param mensaje Estructura ChatMessage recibida o generada.
    */
   private agregarMensajeLocal(mensaje: ChatMessage): void {
-    const existe = this.mensajes().some(item => item.id === mensaje.id);
-    
-    if (existe) {
-      // Si el mensaje ya existía en la lista local, lo actualizamos (ej. cambio de estado o confirmación)
-      this.mensajes.update(lista =>
-        lista.map(item =>
-          item.id === mensaje.id
-            ? { ...item, ...mensaje }
-            : item
-        )
-      );
-      console.log('Mensajes en el signal:', this.mensajes());
+    const usuarioActual = this.localStorageService.obtenerSesion()?.usuario;
+    const contactoActivo = this.contactoSeleccionado();
+
+    if (!usuarioActual) return;
+
+    // Obtener el ID del contacto con el que estás hablando actualmente
+    const idContactoActivo = contactoActivo 
+      ? (contactoActivo.contactoId || contactoActivo.id) 
+      : null;
+
+    // Un mensaje pertenece al chat activo si:
+    // 1. El emisor es el contacto activo Y el receptor eres tú.
+    // 2. El emisor eres tú Y el receptor es el contacto activo.
+    const esDelChatActivo = idContactoActivo && (
+      (mensaje.emisorId === idContactoActivo && mensaje.receptorId === usuarioActual.id) ||
+      (mensaje.emisorId === usuarioActual.id && mensaje.receptorId === idContactoActivo)
+    );
+
+    // 1. Actualización de la pantalla de mensajes del chat
+    if (esDelChatActivo) {
+      const existe = this.mensajes().some(item => item.id === mensaje.id);
+      
+      if (existe) {
+        this.mensajes.update(lista =>
+          lista.map(item => item.id === mensaje.id ? { ...item, ...mensaje } : item)
+        );
+      } else {
+        this.mensajes.update(lista => [...lista, mensaje]);
+      }
       this.bajarScrollMensajes();
-      return;
     }
 
-    // Inserción inmutable para nuevos mensajes
-    this.mensajes.update(lista => [...lista, mensaje]);
-    this.bajarScrollMensajes();
+    // 2. Actualización de contadores 'noLeidos' en la lista de contactos
+    // Solo si el mensaje lo envió otra persona y NO tienes abierta la conversación con esa persona
+    const esMensajeRecibido = mensaje.emisorId !== usuarioActual.id;
+    
+    if (esMensajeRecibido) {
+      this.contactsSignal.update(contactos =>
+        contactos.map(c => {
+          const idContacto = c.contactoId || c.id;
+          
+          if (idContacto === mensaje.emisorId) {
+            // Si el chat con este emisor NO está abierto actualmente, sumamos a noLeidos
+            const estaChatAbierto = idContactoActivo === mensaje.emisorId;
+            return {
+              ...c,
+              noLeidos: estaChatAbierto ? 0 : (c.noLeidos ?? 0) + 1
+            };
+          }
+          return c;
+        })
+      );
+    }
+  }
+
+  //Limpiar la sesion del contacto seleccionado
+  limpiarContactoSeleccionado(): void {
+    this.contactoSeleccionado.set(null);
   }
 
   /**
